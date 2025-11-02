@@ -1,0 +1,187 @@
+.experience-detail {
+  min-height: 60vh;
+}
+
+.back-link {
+  display: inline-block;
+  color: #3498db;
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #2980b9;
+}
+
+.detail-header {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.detail-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.meta-badge {
+  padding: 0.5rem 1rem;
+  background-color: #ecf0f1;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  color: #2c3e50;
+}
+
+.meta-badge.highlight {
+  background-color: #3498db;
+  color: white;
+}
+
+.offer-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.offer-badge.selected {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.offer-badge.not {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.offer-badge.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.detail-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.detail-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 0.5rem;
+}
+
+.rounds-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.round-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+}
+
+.round-header h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  font-size: 1.25rem;
+}
+
+.round-questions,
+.round-feedback {
+  margin-top: 1rem;
+}
+
+.round-questions h4,
+.round-feedback h4 {
+  color: #34495e;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.round-questions ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  line-height: 1.8;
+}
+
+.round-questions li {
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.round-feedback p {
+  color: #555;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.tips-content {
+  color: #555;
+  line-height: 1.8;
+  font-size: 1.05rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.info-item {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  color: #555;
+}
+
+.info-item strong {
+  color: #2c3e50;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .detail-title {
+    font-size: 1.5rem;
+  }
+
+  .detail-header,
+  .detail-section {
+    padding: 1.5rem;
+  }
+
+  .round-card {
+    padding: 1rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
