@@ -73,7 +73,7 @@ const experienceSchema = new mongoose.Schema({
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false, // Allow anonymous submissions
     index: true,
   },
   authorName: {

@@ -74,8 +74,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/experiences - Create new experience (Protected)
-router.post('/', protect, async (req, res) => {
+// POST /api/experiences - Create new experience (Optional auth - works with or without)
+router.post('/', async (req, res) => {
   try {
     const {
       company,
@@ -87,12 +87,42 @@ router.post('/', protect, async (req, res) => {
       tips,
       interviewDate,
       offerStatus,
+      author, // For anonymous submissions
     } = req.body;
 
     // Basic validation
     if (!company || !role || !branch || !year || !rounds) {
       return res.status(400).json({ 
         error: 'Missing required fields: company, role, branch, year, rounds' 
+      });
+    }
+
+    // If user is authenticated, use their info; otherwise use provided author name
+    let authorId = null;
+    let authorName = author || 'Anonymous';
+
+    // Try to get user from token if provided (optional auth)
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      try {
+        const jwt = require('jsonwebtoken');
+        const User = require('../models/User');
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key-change-in-production');
+        const user = await User.findById(decoded.id);
+        if (user) {
+          authorId = user._id;
+          authorName = user.name;
+        }
+      } catch (err) {
+        // Token invalid or expired, continue with anonymous submission
+        console.log('Optional auth failed, using anonymous submission');
+      }
+    }
+
+    // Validate author name is provided if not authenticated
+    if (!authorId && !author) {
+      return res.status(400).json({ 
+        error: 'Author name is required for anonymous submissions' 
       });
     }
 
@@ -106,8 +136,8 @@ router.post('/', protect, async (req, res) => {
       tips: tips || '',
       interviewDate: interviewDate || new Date(),
       offerStatus: offerStatus || 'Pending',
-      author: req.user._id,
-      authorName: req.user.name,
+      author: authorId,
+      authorName: authorName,
     });
 
     const populatedExperience = await Experience.findById(experience._id)
