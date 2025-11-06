@@ -1,4 +1,7 @@
-const API_BASE_URL = 'http://localhost:3001/api';
+// Resolve API base URL from env at build time, with sensible fallbacks
+const API_BASE_URL = (import.meta && import.meta.env && import.meta.env.VITE_API_BASE_URL)
+  ? import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '') + '/api'
+  : 'http://localhost:3001/api';
 
 // Helper function for API calls
 const fetchAPI = async (endpoint, options = {}) => {

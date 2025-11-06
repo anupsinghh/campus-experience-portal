@@ -1,56 +1,99 @@
 .experience-list {
   min-height: 60vh;
+  background: var(--gray-50);
+  padding: var(--spacing-2xl) 0;
 }
 
 .page-title {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  color: #2c3e50;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  color: var(--gray-900);
+  letter-spacing: -0.02em;
 }
 
 .page-subtitle {
-  font-size: 1.125rem;
-  color: #666;
-  margin-bottom: 2rem;
+  font-size: 1.25rem;
+  color: var(--gray-600);
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.6;
 }
 
 .loading,
 .error,
 .no-results {
   text-align: center;
-  padding: 3rem;
+  padding: var(--spacing-3xl);
   font-size: 1.125rem;
 }
 
 .loading {
-  color: #666;
+  color: var(--gray-600);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.loading::before {
+  content: '';
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--gray-200);
+  border-top-color: var(--primary-600);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .error {
-  color: #e74c3c;
-  background-color: #fee;
-  border: 1px solid #fcc;
-  border-radius: 8px;
+  color: var(--error-dark);
+  background: linear-gradient(135deg, var(--error-light) 0%, #fee2e2 100%);
+  border: 2px solid var(--error);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .no-results {
-  color: #666;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  color: var(--gray-700);
+  background: white;
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-3xl);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.no-results::before {
+  content: '🔍';
+  font-size: 3rem;
+  display: block;
+  margin-bottom: var(--spacing-lg);
 }
 
 .experiences-grid {
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-lg);
 }
 
 @media (max-width: 768px) {
+  .experience-list {
+    padding: var(--spacing-lg) 0;
+  }
+
   .page-title {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
   .page-subtitle {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 }
-

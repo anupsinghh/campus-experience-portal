@@ -1,112 +1,172 @@
 .experience-card {
   background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s, transform 0.2s;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.experience-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--primary-500) 0%, var(--primary-600) 100%);
+  transform: scaleY(0);
+  transition: transform var(--transition-base);
 }
 
 .experience-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  border-color: var(--primary-200);
+}
+
+.experience-card:hover::before {
+  transform: scaleY(1);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg);
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--spacing-md);
 }
 
 .card-title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 600;
   flex: 1;
+  min-width: 200px;
+  line-height: 1.3;
 }
 
 .card-title a {
-  color: #2c3e50;
+  color: var(--gray-900);
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color var(--transition-base);
+  display: block;
 }
 
 .card-title a:hover {
-  color: #3498db;
+  color: var(--primary-600);
 }
 
 .offer-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.875rem;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
   font-weight: 600;
   white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid transparent;
+  transition: all var(--transition-base);
 }
 
 .offer-badge.selected {
-  background-color: #d4edda;
-  color: #155724;
+  background: linear-gradient(135deg, var(--success-light) 0%, #d1fae5 100%);
+  color: var(--success-dark);
+  border-color: var(--success);
 }
 
 .offer-badge.not {
-  background-color: #f8d7da;
-  color: #721c24;
+  background: linear-gradient(135deg, var(--error-light) 0%, #fee2e2 100%);
+  color: var(--error-dark);
+  border-color: var(--error);
 }
 
 .offer-badge.pending {
-  background-color: #fff3cd;
-  color: #856404;
+  background: linear-gradient(135deg, var(--warning-light) 0%, #fef3c7 100%);
+  color: var(--warning-dark);
+  border-color: var(--warning);
 }
 
 .card-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
   font-size: 0.9rem;
-  color: #666;
+  color: var(--gray-600);
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  background-color: var(--gray-50);
+  border-radius: var(--radius-md);
 }
 
 .meta-item strong {
-  color: #2c3e50;
+  color: var(--gray-900);
+  font-weight: 600;
 }
 
 .card-tips {
-  color: #555;
-  margin-bottom: 1rem;
-  line-height: 1.6;
+  color: var(--gray-700);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.7;
+  font-size: 0.95rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 1rem;
-  border-top: 1px solid #f0f0f0;
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--gray-100);
 }
 
 .card-author {
   font-size: 0.875rem;
-  color: #888;
+  color: var(--gray-500);
+  font-style: italic;
 }
 
 .card-link {
-  color: #3498db;
+  color: var(--primary-600);
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .card-link:hover {
-  color: #2980b9;
+  color: var(--primary-700);
+  gap: var(--spacing-sm);
+}
+
+.card-link::after {
+  content: '→';
+  transition: transform var(--transition-base);
+}
+
+.card-link:hover::after {
+  transform: translateX(4px);
 }
 
 @media (max-width: 768px) {
   .experience-card {
-    padding: 1rem;
+    padding: var(--spacing-lg);
   }
 
   .card-header {
@@ -114,15 +174,18 @@
     align-items: flex-start;
   }
 
+  .card-title {
+    font-size: 1.25rem;
+  }
+
   .card-meta {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
   }
 
   .card-footer {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
   }
 }
-

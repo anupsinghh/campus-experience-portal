@@ -1,0 +1,16 @@
+# Render blueprint for backend deployment
+services:
+  - type: web
+    name: placement-portal-backend
+    env: node
+    rootDir: backend
+    plan: free
+    autoDeploy: true
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: CORS_ORIGIN
+        # Set this to your frontend origin (e.g., https://your-frontend.example.com)
+        # For local testing, you can set http://localhost:5173
+        value: "http://localhost:5173"
