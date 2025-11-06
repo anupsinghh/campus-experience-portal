@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { getExperiences } = require('../data/mockData');
+const Experience = require('../models/Experience');
 
 // GET /api/companies - Get all unique companies with stats
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const experiences = getExperiences();
+    const experiences = await Experience.find();
     const companyMap = {};
 
     experiences.forEach(exp => {
@@ -41,9 +41,9 @@ router.get('/', (req, res) => {
 
     res.json(companies);
   } catch (error) {
+    console.error('Error fetching companies:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 module.exports = router;
-

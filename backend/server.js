@@ -1,8 +1,14 @@
 const express = require('express');
 const cors = require('cors');
+const connectDB = require('./config/database');
 const experiencesRoutes = require('./routes/experiences');
 const companiesRoutes = require('./routes/companies');
 const insightsRoutes = require('./routes/insights');
+const authRoutes = require('./routes/auth');
+const usersRoutes = require('./routes/users');
+
+// Connect to MongoDB
+connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -26,10 +32,11 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 app.use(express.json());
 
 // Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', usersRoutes);
 app.use('/api/experiences', experiencesRoutes);
 app.use('/api/companies', companiesRoutes);
 app.use('/api/insights', insightsRoutes);
@@ -42,4 +49,3 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-

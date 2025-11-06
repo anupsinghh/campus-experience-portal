@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { getExperiences } = require('../data/mockData');
+const Experience = require('../models/Experience');
 
 // GET /api/insights - Get analytics and insights
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const experiences = getExperiences();
+    const experiences = await Experience.find();
 
     // Extract all questions
     const allQuestions = [];
@@ -26,14 +26,15 @@ router.get('/', (req, res) => {
     const packages = experiences
       .filter(exp => exp.package)
       .map(exp => {
-        const packageValue = parseFloat(exp.package.replace(' LPA', ''));
+        const packageValue = parseFloat(exp.package.replace(' LPA', '').replace('LPA', '').trim());
         return {
           value: packageValue,
           company: exp.company,
           role: exp.role,
           year: exp.year
         };
-      });
+      })
+      .filter(pkg => !isNaN(pkg.value));
 
     // Calculate statistics
     const totalExperiences = experiences.length;
@@ -98,9 +99,9 @@ router.get('/', (req, res) => {
       packageTrends: packages.sort((a, b) => b.value - a.value).slice(0, 10)
     });
   } catch (error) {
+    console.error('Error fetching insights:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 module.exports = router;
-

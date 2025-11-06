@@ -10,7 +10,17 @@ services:
     startCommand: node server.js
     healthCheckPath: /api/health
     envVars:
+      - key: MONGODB_URI
+        # Replace <db_password> with your actual MongoDB password
+        # Replace <database_name> with your database name (e.g., placement-portal)
+        # Example: mongodb+srv://shvshn:yourpassword@cluster0.j0gdg.mongodb.net/placement-portal?retryWrites=true&w=majority
+        value: "mongodb+srv://shvshn:<db_password>@cluster0.j0gdg.mongodb.net/placement-portal?retryWrites=true&w=majority"
+      - key: JWT_SECRET
+        # Generate a secure random string for JWT signing
+        # You can use: openssl rand -base64 32
+        value: "your-super-secret-jwt-key-change-this-in-production"
+      - key: JWT_EXPIRE
+        value: "30d"
       - key: CORS_ORIGIN
-        # Set this to your frontend origin (e.g., https://your-frontend.example.com)
-        # For local testing, you can set http://localhost:5173
-        value: "http://localhost:5173"
+        # Set this to your frontend origin(s), comma-separated for multiple
+        value: "https://campus-placement-interview-experien-kappa.vercel.app,http://localhost:5173"
