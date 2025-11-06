@@ -1,7 +1,21 @@
-// Resolve API base URL from env at build time, with sensible fallbacks
-const API_BASE_URL = (import.meta && import.meta.env && import.meta.env.VITE_API_BASE_URL)
-  ? import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '') + '/api'
-  : 'http://localhost:3001/api';
+// Resolve API base URL with env first, then production (Vercel) vs local fallbacks
+const getDefaultApiBase = () => {
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname || '';
+    // If deployed on Vercel (production), use the Render backend
+    if (host.endsWith('vercel.app')) {
+      return 'https://placement-portal-backend-wq06.onrender.com';
+    }
+  }
+  // Local dev fallback
+  return 'http://localhost:3001';
+};
+
+const resolvedBase = (import.meta && import.meta.env && import.meta.env.VITE_API_BASE_URL)
+  ? import.meta.env.VITE_API_BASE_URL
+  : getDefaultApiBase();
+
+const API_BASE_URL = resolvedBase.replace(/\/$/, '') + '/api';
 
 // Helper function for API calls
 const fetchAPI = async (endpoint, options = {}) => {
