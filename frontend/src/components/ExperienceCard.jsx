@@ -6,7 +6,7 @@ function ExperienceCard({ experience }) {
     <div className="experience-card">
       <div className="card-header">
         <h3 className="card-title">
-          <Link to={`/experiences/${experience.id}`}>
+          <Link to={`/experiences/${experience._id || experience.id}`}>
             {experience.company} - {experience.role}
           </Link>
         </h3>
@@ -36,7 +36,7 @@ function ExperienceCard({ experience }) {
         
         <div className="card-footer">
           <span className="card-author">By {experience.authorName || (experience.author?.name) || 'Anonymous'}</span>
-          <Link to={`/experiences/${experience.id}`} className="card-link">
+          <Link to={`/experiences/${experience._id || experience.id}`} className="card-link">
             Read More →
           </Link>
         </div>

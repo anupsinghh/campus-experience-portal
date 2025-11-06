@@ -3,9 +3,11 @@
 }
 
 .hero {
-  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 50%, var(--primary-800) 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: var(--spacing-3xl) 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -36,6 +38,7 @@
 .hero .container {
   position: relative;
   z-index: 1;
+  width: 100%;
 }
 
 .hero-title {
@@ -102,7 +105,7 @@
 
 .btn-primary {
   background: white;
-  color: var(--primary-600);
+  color: #667eea;
   box-shadow: var(--shadow-lg);
 }
 
@@ -110,7 +113,7 @@
   background: var(--gray-50);
   transform: translateY(-3px);
   box-shadow: var(--shadow-xl);
-  color: var(--primary-700);
+  color: #764ba2;
 }
 
 .btn-secondary {
@@ -248,6 +251,7 @@
 
 @media (max-width: 768px) {
   .hero {
+    min-height: 80vh;
     padding: var(--spacing-2xl) 0;
   }
 

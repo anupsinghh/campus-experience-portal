@@ -84,7 +84,7 @@ function ExperienceList() {
         ) : (
           <div className="experiences-grid">
             {experiences.map((experience) => (
-              <ExperienceCard key={experience.id} experience={experience} />
+              <ExperienceCard key={experience._id || experience.id} experience={experience} />
             ))}
           </div>
         )}

@@ -3,7 +3,7 @@ import './FilterBar.css';
 function FilterBar({ filters, onFilterChange, onSearchChange, searchTerm }) {
   return (
     <div className="filter-bar">
-      <div className="filter-group">
+      <div className="filter-group search-input">
         <input
           type="text"
           placeholder="Search experiences..."
@@ -13,7 +13,7 @@ function FilterBar({ filters, onFilterChange, onSearchChange, searchTerm }) {
         />
       </div>
 
-      <div className="filter-group">
+      <div className="filter-group company-filter">
         <input
           type="text"
           placeholder="Company"
@@ -70,4 +70,3 @@ function FilterBar({ filters, onFilterChange, onSearchChange, searchTerm }) {
 }
 
 export default FilterBar;
-

@@ -79,8 +79,8 @@
 }
 
 .experiences-grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--spacing-lg);
 }
 
@@ -95,5 +95,9 @@
 
   .page-subtitle {
     font-size: 1.125rem;
+  }
+
+  .experiences-grid {
+    grid-template-columns: 1fr;
   }
 }
