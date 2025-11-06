@@ -120,7 +120,7 @@
 
 .btn-remove,
 .btn-remove-small {
-  background: linear-gradient(135deg, var(--error) 0%, var(--error-dark) 100%);
+  background: var(--primary-600);
   color: white;
   border: none;
   border-radius: var(--radius-md);
@@ -130,8 +130,6 @@
   font-weight: 600;
   transition: all var(--transition-base);
   box-shadow: var(--shadow-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .btn-remove-small {
@@ -142,7 +140,7 @@
 
 .btn-remove:hover,
 .btn-remove-small:hover {
-  background: linear-gradient(135deg, var(--error-dark) 0%, #b91c1c 100%);
+  background: var(--primary-700);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
@@ -159,7 +157,7 @@
 }
 
 .btn-add {
-  background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%);
+  background: var(--primary-600);
   color: white;
   border: none;
   border-radius: var(--radius-md);
@@ -173,7 +171,7 @@
 }
 
 .btn-add:hover {
-  background: linear-gradient(135deg, var(--success-dark) 0%, #059669 100%);
+  background: var(--primary-700);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
@@ -207,7 +205,7 @@
 
 .btn-primary {
   padding: var(--spacing-md) var(--spacing-xl);
-  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+  background: var(--primary-600);
   color: white;
   border: none;
   border-radius: var(--radius-md);
@@ -219,7 +217,7 @@
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-800) 100%);
+  background: var(--primary-700);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }

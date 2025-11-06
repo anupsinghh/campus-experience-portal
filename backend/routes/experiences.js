@@ -56,6 +56,13 @@ router.get('/', async (req, res) => {
 // GET /api/experiences/:id - Get single experience
 router.get('/:id', async (req, res) => {
   try {
+    const mongoose = require('mongoose');
+    
+    // Validate MongoDB ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid experience ID format' });
+    }
+    
     const experience = await Experience.findById(req.params.id)
       .populate('author', 'name email role branch graduationYear currentCompany');
     
@@ -70,7 +77,7 @@ router.get('/:id', async (req, res) => {
     res.json(experience);
   } catch (error) {
     console.error('Error fetching experience:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message || 'Server error' });
   }
 });
 

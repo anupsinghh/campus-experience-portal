@@ -1,6 +1,6 @@
 .experience-card {
   background: white;
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--primary-200);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-lg);
@@ -25,7 +25,7 @@
 .experience-card:hover {
   box-shadow: var(--shadow-lg);
   transform: translateY(-4px);
-  border-color: var(--primary-200);
+  border-color: var(--primary-300);
 }
 
 .experience-card:hover::before {
@@ -105,12 +105,13 @@
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-md);
-  background-color: var(--gray-50);
+  background-color: var(--primary-50);
   border-radius: var(--radius-md);
+  border: 1px solid var(--primary-200);
 }
 
 .meta-item strong {
-  color: var(--gray-900);
+  color: var(--primary-700);
   font-weight: 600;
 }
 
@@ -130,7 +131,7 @@
   justify-content: space-between;
   align-items: center;
   padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--gray-100);
+  border-top: 1px solid var(--primary-100);
 }
 
 .card-author {

@@ -1,6 +1,6 @@
-/* CSS Variables for Professional Design */
+/* CSS Variables for Professional Design - Unified Blue Theme */
 :root {
-  /* Primary Color Palette */
+  /* Primary Blue Color Palette */
   --primary-50: #eff6ff;
   --primary-100: #dbeafe;
   --primary-200: #bfdbfe;
@@ -24,7 +24,7 @@
   --gray-800: #1f2937;
   --gray-900: #111827;
 
-  /* Semantic Colors */
+  /* Semantic Colors - Using Blue Tints */
   --success: #10b981;
   --success-light: #d1fae5;
   --success-dark: #059669;

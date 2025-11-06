@@ -52,9 +52,9 @@
 }
 
 .error {
-  color: var(--error-dark);
-  background: linear-gradient(135deg, var(--error-light) 0%, #fee2e2 100%);
-  border: 2px solid var(--error);
+  color: var(--primary-700);
+  background: var(--primary-50);
+  border: 2px solid var(--primary-300);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   max-width: 600px;

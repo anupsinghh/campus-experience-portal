@@ -28,7 +28,8 @@
 
 .insight-card.overview {
   grid-column: 1 / -1;
-  background: linear-gradient(135deg, white 0%, var(--gray-50) 100%);
+  background: linear-gradient(135deg, white 0%, var(--primary-50) 100%);
+  border: 1px solid var(--primary-200);
 }
 
 .insight-card h2 {
@@ -131,7 +132,7 @@
 }
 
 .question-rank {
-  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+  background: var(--primary-600);
   color: white;
   width: 2.5rem;
   height: 2.5rem;
@@ -193,7 +194,7 @@
 
 .distribution-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary-500) 0%, var(--primary-600) 100%);
+  background: var(--primary-600);
   transition: width var(--transition-slow);
   border-radius: var(--radius-full);
   box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);

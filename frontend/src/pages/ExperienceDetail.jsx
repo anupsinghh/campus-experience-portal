@@ -114,10 +114,16 @@ function ExperienceDetail() {
             <h2>Additional Information</h2>
             <div className="info-grid">
               <div className="info-item">
-                <strong>Interview Date:</strong> {experience.interviewDate || 'Not specified'}
+                <strong>Interview Date:</strong> {
+                  experience.interviewDate 
+                    ? (typeof experience.interviewDate === 'string' 
+                        ? experience.interviewDate.split('T')[0] 
+                        : new Date(experience.interviewDate).toLocaleDateString())
+                    : 'Not specified'
+                }
               </div>
               <div className="info-item">
-                <strong>Posted By:</strong> {experience.author}
+                <strong>Posted By:</strong> {experience.authorName || (experience.author?.name) || 'Anonymous'}
               </div>
               {experience.createdAt && (
                 <div className="info-item">

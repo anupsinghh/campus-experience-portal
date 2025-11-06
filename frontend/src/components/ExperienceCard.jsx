@@ -35,7 +35,7 @@ function ExperienceCard({ experience }) {
         )}
         
         <div className="card-footer">
-          <span className="card-author">By {experience.author}</span>
+          <span className="card-author">By {experience.authorName || (experience.author?.name) || 'Anonymous'}</span>
           <Link to={`/experiences/${experience.id}`} className="card-link">
             Read More →
           </Link>

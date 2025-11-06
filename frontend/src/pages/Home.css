@@ -159,13 +159,13 @@
 }
 
 .feature-card {
-  background: linear-gradient(135deg, white 0%, var(--gray-50) 100%);
+  background: linear-gradient(135deg, white 0%, var(--primary-50) 100%);
   padding: var(--spacing-2xl);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
   text-align: center;
   transition: all var(--transition-base);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--primary-200);
   position: relative;
   overflow: hidden;
 }
@@ -185,7 +185,7 @@
 .feature-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-xl);
-  border-color: var(--primary-200);
+  border-color: var(--primary-300);
 }
 
 .feature-card:hover::before {
@@ -222,10 +222,10 @@
 }
 
 .cta {
-  background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+  background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
   padding: var(--spacing-3xl) 0;
   text-align: center;
-  border-top: 1px solid var(--gray-200);
+  border-top: 1px solid var(--primary-200);
 }
 
 .cta h2 {
