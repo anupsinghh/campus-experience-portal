@@ -7,7 +7,7 @@ const FilterBar = memo(function FilterBar({ filters, onFilterChange, onSearchCha
       <div className="filter-group search-group">
         <input
           type="text"
-          placeholder="Search experiences..."
+          placeholder="Search experiences"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           className="search-field"

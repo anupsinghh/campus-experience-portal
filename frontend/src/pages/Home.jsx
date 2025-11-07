@@ -46,13 +46,6 @@ function Home() {
                 and company statistics.
               </p>
             </div>
-            <div className="feature-card">
-              <h3>🤝 Community Driven</h3>
-              <p>
-                Build a community-driven knowledge base that improves placement readiness
-                and campus-wide transparency.
-              </p>
-            </div>
           </div>
         </div>
       </section>
