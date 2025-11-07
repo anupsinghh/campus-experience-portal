@@ -1,6 +1,6 @@
 .insights {
   min-height: 60vh;
-  background: var(--gray-50);
+  background: var(--beige-200);
   padding: var(--spacing-2xl) 0;
 }
 
@@ -16,7 +16,7 @@
   padding: var(--spacing-2xl);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--beige-300);
   transition: all var(--transition-base);
   border-left: 4px solid var(--primary-500);
 }
@@ -24,7 +24,7 @@
 .insight-card:hover {
   box-shadow: var(--shadow-lg);
   transform: translateY(-4px);
-  border-color: var(--primary-300);
+  border-color: var(--accent-purple-lighter);
 }
 
 .insight-card.overview {
@@ -60,14 +60,14 @@
 .stat-item {
   text-align: center;
   padding: var(--spacing-xl);
-  background: var(--primary-50);
+  background: var(--beige-100);
   border-radius: var(--radius-xl);
-  border: 1px solid var(--primary-200);
+  border: 1px solid var(--beige-300);
   transition: all var(--transition-base);
 }
 
 .stat-item:hover {
-  border-color: var(--primary-400);
+  border-color: var(--accent-purple-lighter);
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
 }
@@ -102,7 +102,7 @@
 }
 
 .questions-list::-webkit-scrollbar-track {
-  background: var(--gray-100);
+  background: var(--beige-100);
   border-radius: var(--radius-full);
 }
 
@@ -119,15 +119,15 @@
   display: flex;
   gap: var(--spacing-lg);
   padding: var(--spacing-lg);
-  background: var(--gray-50);
+  background: var(--beige-100);
   border-radius: var(--radius-xl);
   align-items: flex-start;
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--beige-300);
   transition: all var(--transition-base);
 }
 
 .question-item:hover {
-  border-color: var(--primary-300);
+  border-color: var(--accent-purple-lighter);
   transform: translateX(4px);
   box-shadow: var(--shadow-sm);
 }
@@ -186,7 +186,7 @@
 
 .distribution-bar {
   height: 2rem;
-  background-color: var(--gray-200);
+  background-color: var(--beige-200);
   border-radius: var(--radius-full);
   overflow: hidden;
   position: relative;
@@ -222,7 +222,7 @@
 }
 
 .package-list::-webkit-scrollbar-track {
-  background: var(--gray-100);
+  background: var(--beige-100);
   border-radius: var(--radius-full);
 }
 
@@ -237,7 +237,7 @@
 
 .package-item {
   padding: var(--spacing-lg);
-  background: var(--primary-50);
+  background: var(--beige-100);
   border-radius: var(--radius-xl);
   border-left: 4px solid var(--primary-500);
   transition: all var(--transition-base);

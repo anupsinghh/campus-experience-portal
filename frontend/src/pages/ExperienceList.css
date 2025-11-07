@@ -1,6 +1,6 @@
 .experience-list {
   min-height: 60vh;
-  background: var(--gray-50);
+  background: var(--beige-200);
   padding: var(--spacing-2xl) 0;
 }
 
@@ -14,7 +14,7 @@
 
 .page-subtitle {
   font-size: 1.25rem;
-  color: var(--gray-600);
+  color: var(--gray-700);
   margin-bottom: var(--spacing-xl);
   line-height: 1.6;
 }
@@ -39,7 +39,7 @@
   content: '';
   width: 48px;
   height: 48px;
-  border: 4px solid var(--gray-200);
+  border: 4px solid var(--beige-300);
   border-top-color: var(--primary-600);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -64,7 +64,7 @@
 .no-results {
   color: var(--gray-700);
   background: white;
-  border: 2px dashed var(--gray-300);
+  border: 2px dashed var(--beige-400);
   border-radius: var(--radius-lg);
   padding: var(--spacing-3xl);
   max-width: 600px;

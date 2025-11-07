@@ -1,6 +1,6 @@
 .experience-card {
   background: white;
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--beige-300);
   border-radius: var(--radius-2xl);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-md);
@@ -16,7 +16,7 @@
 .experience-card:hover {
   box-shadow: var(--shadow-lg);
   transform: translateY(-4px);
-  border-color: var(--primary-300);
+  border-color: var(--accent-purple-lighter);
 }
 
 .card-header {
@@ -99,9 +99,9 @@
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
-  background-color: var(--gray-100);
+  background-color: var(--beige-100);
   border-radius: var(--radius-md);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--beige-300);
 }
 
 .meta-item strong {
@@ -127,7 +127,7 @@
   justify-content: space-between;
   align-items: center;
   padding-top: var(--spacing-md);
-  border-top: 1px solid var(--gray-200);
+  border-top: 1px solid var(--beige-200);
   margin-top: auto;
 }
 

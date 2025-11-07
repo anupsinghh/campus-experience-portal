@@ -1,6 +1,24 @@
-/* CSS Variables for Modern Minimal Design */
+/* CSS Variables for Warm Beige Theme */
 :root {
-  /* Primary Blue Color Palette */
+  /* Warm Beige Color Palette */
+  --beige-50: #fefcf9;
+  --beige-100: #faf8f3;
+  --beige-200: #f5f5dc;
+  --beige-300: #f0ede0;
+  --beige-400: #e8e4d5;
+  --beige-500: #d4cfb8;
+  --beige-600: #b8b39d;
+  --beige-700: #9a9682;
+  --beige-800: #7a7766;
+  --beige-900: #5a5849;
+
+  /* Accent Purple */
+  --accent-purple: rgba(120, 119, 198, 1);
+  --accent-purple-light: rgba(120, 119, 198, 0.3);
+  --accent-purple-lighter: rgba(120, 119, 198, 0.1);
+  --accent-purple-dark: rgba(90, 89, 150, 1);
+
+  /* Primary Blue (for buttons and links) */
   --primary-50: #eff6ff;
   --primary-100: #dbeafe;
   --primary-200: #bfdbfe;
@@ -12,17 +30,17 @@
   --primary-800: #1e40af;
   --primary-900: #1e3a8a;
 
-  /* Neutral Gray Scale */
-  --gray-50: #f8fafc;
-  --gray-100: #f1f5f9;
-  --gray-200: #e2e8f0;
-  --gray-300: #cbd5e1;
-  --gray-400: #94a3b8;
-  --gray-500: #64748b;
-  --gray-600: #475569;
-  --gray-700: #334155;
-  --gray-800: #1e293b;
-  --gray-900: #0f172a;
+  /* Neutral Gray Scale (warm tones) */
+  --gray-50: #faf8f3;
+  --gray-100: #f5f5dc;
+  --gray-200: #e8e4d5;
+  --gray-300: #d4cfb8;
+  --gray-400: #b8b39d;
+  --gray-500: #9a9682;
+  --gray-600: #7a7766;
+  --gray-700: #5a5849;
+  --gray-800: #3d3b32;
+  --gray-900: #2a2821;
 
   /* Semantic Colors */
   --success: #10b981;
@@ -76,7 +94,7 @@
   line-height: 1.6;
   font-weight: 400;
   color: var(--gray-900);
-  background-color: var(--gray-50);
+  background-color: var(--beige-200);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -87,7 +105,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: var(--gray-50);
+  background-color: var(--beige-200);
 }
 
 h1,
@@ -154,6 +172,6 @@ html {
 
 /* Selection color */
 ::selection {
-  background-color: var(--primary-200);
+  background-color: var(--accent-purple-light);
   color: var(--gray-900);
 }

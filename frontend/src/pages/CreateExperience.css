@@ -1,6 +1,6 @@
 .create-experience {
   min-height: 60vh;
-  background: var(--gray-50);
+  background: var(--beige-200);
   padding: var(--spacing-2xl) 0;
 }
 
@@ -9,7 +9,7 @@
   padding: var(--spacing-2xl);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--beige-300);
 }
 
 .form-section {
@@ -49,7 +49,7 @@
 .form-group textarea {
   width: 100%;
   padding: var(--spacing-md);
-  border: 2px solid var(--gray-300);
+  border: 2px solid var(--beige-300);
   border-radius: var(--radius-md);
   font-size: 0.95rem;
   font-family: inherit;
@@ -77,18 +77,18 @@
 }
 
 .round-form {
-  border: 2px solid var(--gray-200);
+  border: 2px solid var(--beige-300);
   border-radius: var(--radius-xl);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-lg);
-  background: var(--gray-50);
+  background: var(--beige-100);
   transition: all var(--transition-base);
   position: relative;
   border-left: 4px solid var(--primary-500);
 }
 
 .round-form:hover {
-  border-color: var(--primary-300);
+  border-color: var(--accent-purple-lighter);
   box-shadow: var(--shadow-sm);
 }
 
@@ -170,14 +170,14 @@
   justify-content: flex-end;
   margin-top: var(--spacing-xl);
   padding-top: var(--spacing-xl);
-  border-top: 2px solid var(--gray-200);
+  border-top: 2px solid var(--beige-300);
 }
 
 .btn-secondary {
   padding: var(--spacing-md) var(--spacing-xl);
-  background: var(--gray-200);
+  background: var(--beige-200);
   color: var(--gray-700);
-  border: none;
+  border: 2px solid var(--beige-400);
   border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 1rem;
@@ -186,7 +186,7 @@
 }
 
 .btn-secondary:hover {
-  background: var(--gray-300);
+  background: var(--beige-300);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }

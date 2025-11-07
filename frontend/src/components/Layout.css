@@ -2,6 +2,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--beige-200);
 }
 
 .header {
@@ -12,7 +13,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  border-bottom: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--beige-300);
 }
 
 .header .container {
@@ -59,7 +60,7 @@
 }
 
 .nav-link:hover {
-  background-color: var(--gray-100);
+  background-color: var(--beige-100);
   color: var(--primary-600);
   transform: translateY(-1px);
 }
@@ -67,6 +68,7 @@
 .main-content {
   flex: 1;
   padding: var(--spacing-2xl) 0;
+  background-color: var(--beige-200);
 }
 
 .footer {
@@ -74,7 +76,7 @@
   color: var(--gray-600);
   padding: var(--spacing-xl) 0;
   margin-top: auto;
-  border-top: 1px solid var(--gray-200);
+  border-top: 1px solid var(--beige-300);
 }
 
 .footer .container {

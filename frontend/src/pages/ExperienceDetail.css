@@ -1,6 +1,6 @@
 .experience-detail {
   min-height: 60vh;
-  background: var(--gray-50);
+  background: var(--beige-200);
   padding: var(--spacing-2xl) 0;
 }
 
@@ -41,7 +41,7 @@
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-md);
   margin-bottom: var(--spacing-xl);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--beige-300);
 }
 
 .detail-title {
@@ -62,17 +62,17 @@
 
 .meta-badge {
   padding: var(--spacing-sm) var(--spacing-lg);
-  background-color: var(--gray-100);
+  background-color: var(--beige-100);
   border-radius: var(--radius-full);
   font-size: 0.875rem;
   color: var(--gray-700);
   font-weight: 600;
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--beige-300);
   transition: all var(--transition-base);
 }
 
 .meta-badge:hover {
-  background-color: var(--gray-200);
+  background-color: var(--beige-200);
   transform: translateY(-2px);
 }
 
@@ -122,7 +122,7 @@
   padding: var(--spacing-2xl);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--beige-300);
   transition: box-shadow var(--transition-base);
 }
 
@@ -147,17 +147,17 @@
 }
 
 .round-card {
-  border: 2px solid var(--gray-200);
+  border: 2px solid var(--beige-300);
   border-radius: var(--radius-xl);
   padding: var(--spacing-xl);
-  background: var(--gray-50);
+  background: var(--beige-100);
   transition: all var(--transition-base);
   position: relative;
   border-left: 4px solid var(--primary-500);
 }
 
 .round-card:hover {
-  border-color: var(--primary-300);
+  border-color: var(--accent-purple-lighter);
   transform: translateX(4px);
   box-shadow: var(--shadow-sm);
 }
@@ -233,15 +233,15 @@
 
 .info-item {
   padding: var(--spacing-lg);
-  background: var(--gray-50);
+  background: var(--beige-100);
   border-radius: var(--radius-lg);
   color: var(--gray-700);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--beige-300);
   transition: all var(--transition-base);
 }
 
 .info-item:hover {
-  border-color: var(--primary-300);
+  border-color: var(--accent-purple-lighter);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }

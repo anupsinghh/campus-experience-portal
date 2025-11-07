@@ -3,7 +3,7 @@
 }
 
 .hero {
-  background: var(--gray-50);
+  background: var(--beige-200);
   color: var(--gray-900);
   min-height: 100vh;
   display: flex;
@@ -11,6 +11,19 @@
   text-align: center;
   position: relative;
   padding: var(--spacing-3xl) 0;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.5) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.1) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .hero .container {
@@ -34,7 +47,7 @@
 .hero-subtitle {
   font-size: 1.5rem;
   margin-bottom: var(--spacing-2xl);
-  color: var(--gray-600);
+  color: var(--gray-700);
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
@@ -90,7 +103,7 @@
 
 .features {
   padding: var(--spacing-3xl) 0;
-  background: white;
+  background: var(--beige-100);
 }
 
 .section-title {
@@ -105,7 +118,7 @@
 .section-subtitle {
   text-align: center;
   font-size: 1.125rem;
-  color: var(--gray-600);
+  color: var(--gray-700);
   margin-bottom: var(--spacing-2xl);
   max-width: 600px;
   margin-left: auto;
@@ -126,7 +139,7 @@
   box-shadow: var(--shadow-md);
   text-align: center;
   transition: all var(--transition-base);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--beige-300);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -135,7 +148,7 @@
 .feature-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
-  border-color: var(--primary-200);
+  border-color: var(--accent-purple-lighter);
 }
 
 .feature-card h3 {
@@ -169,10 +182,29 @@
 }
 
 .cta {
-  background: var(--gray-50);
+  background: var(--beige-200);
   padding: var(--spacing-3xl) 0;
   text-align: center;
-  border-top: 1px solid var(--gray-200);
+  border-top: 1px solid var(--beige-300);
+  position: relative;
+  overflow: hidden;
+}
+
+.cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.cta h2,
+.cta p {
+  position: relative;
+  z-index: 1;
 }
 
 .cta h2 {
@@ -185,7 +217,7 @@
 
 .cta p {
   font-size: 1.25rem;
-  color: var(--gray-600);
+  color: var(--gray-700);
   margin-bottom: var(--spacing-xl);
   max-width: 600px;
   margin-left: auto;
