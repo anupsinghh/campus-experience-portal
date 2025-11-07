@@ -1,6 +1,6 @@
 .insights {
   min-height: 60vh;
-  background: var(--beige-200);
+  background: transparent;
   padding: var(--spacing-2xl) 0;
 }
 
@@ -12,39 +12,42 @@
 }
 
 .insight-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   padding: var(--spacing-2xl);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--beige-300);
+  border: 1px solid var(--neutral-200);
   transition: all var(--transition-base);
-  border-left: 4px solid var(--primary-500);
+  border-left: 4px solid var(--neutral-500);
 }
 
 .insight-card:hover {
   box-shadow: var(--shadow-lg);
   transform: translateY(-4px);
-  border-color: var(--accent-purple-lighter);
+  border-color: var(--neutral-300);
+  background: rgba(255, 255, 255, 1);
 }
 
 .insight-card.overview {
   grid-column: 1 / -1;
-  background: white;
-  border-left: 4px solid var(--primary-500);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-left: 4px solid var(--neutral-500);
 }
 
 .insight-card h2 {
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: var(--spacing-md);
-  color: var(--gray-900);
-  border-bottom: 3px solid var(--primary-500);
+  color: var(--text-primary);
+  border-bottom: 3px solid var(--neutral-500);
   padding-bottom: var(--spacing-md);
   letter-spacing: -0.01em;
 }
 
 .card-description {
-  color: var(--gray-600);
+  color: var(--text-secondary);
   font-size: 0.95rem;
   margin-bottom: var(--spacing-xl);
   line-height: 1.6;
@@ -60,14 +63,14 @@
 .stat-item {
   text-align: center;
   padding: var(--spacing-xl);
-  background: var(--beige-100);
+  background: var(--neutral-100);
   border-radius: var(--radius-xl);
-  border: 1px solid var(--beige-300);
+  border: 1px solid var(--neutral-200);
   transition: all var(--transition-base);
 }
 
 .stat-item:hover {
-  border-color: var(--accent-purple-lighter);
+  border-color: var(--neutral-300);
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
 }
@@ -75,14 +78,14 @@
 .stat-value {
   font-size: 2.5rem;
   font-weight: 800;
-  color: var(--primary-600);
+  color: var(--neutral-700);
   margin-bottom: var(--spacing-sm);
   line-height: 1;
 }
 
 .stat-label {
   font-size: 0.875rem;
-  color: var(--gray-700);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-weight: 600;
@@ -102,38 +105,38 @@
 }
 
 .questions-list::-webkit-scrollbar-track {
-  background: var(--beige-100);
+  background: var(--neutral-100);
   border-radius: var(--radius-full);
 }
 
 .questions-list::-webkit-scrollbar-thumb {
-  background: var(--primary-400);
+  background: var(--neutral-400);
   border-radius: var(--radius-full);
 }
 
 .questions-list::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-500);
+  background: var(--neutral-500);
 }
 
 .question-item {
   display: flex;
   gap: var(--spacing-lg);
   padding: var(--spacing-lg);
-  background: var(--beige-100);
+  background: var(--neutral-100);
   border-radius: var(--radius-xl);
   align-items: flex-start;
-  border: 1px solid var(--beige-300);
+  border: 1px solid var(--neutral-200);
   transition: all var(--transition-base);
 }
 
 .question-item:hover {
-  border-color: var(--accent-purple-lighter);
+  border-color: var(--neutral-300);
   transform: translateX(4px);
   box-shadow: var(--shadow-sm);
 }
 
 .question-rank {
-  background: var(--primary-600);
+  background: var(--neutral-700);
   color: white;
   width: 2.5rem;
   height: 2.5rem;
@@ -152,7 +155,7 @@
 }
 
 .question-text {
-  color: var(--gray-900);
+  color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
   line-height: 1.7;
   font-weight: 500;
@@ -161,7 +164,7 @@
 
 .question-count {
   font-size: 0.875rem;
-  color: var(--gray-600);
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
@@ -180,13 +183,13 @@
 
 .distribution-name {
   font-weight: 600;
-  color: var(--gray-900);
+  color: var(--text-primary);
   font-size: 0.95rem;
 }
 
 .distribution-bar {
   height: 2rem;
-  background-color: var(--beige-200);
+  background-color: var(--neutral-200);
   border-radius: var(--radius-full);
   overflow: hidden;
   position: relative;
@@ -195,16 +198,16 @@
 
 .distribution-fill {
   height: 100%;
-  background: var(--primary-600);
+  background: var(--neutral-700);
   transition: width var(--transition-slow);
   border-radius: var(--radius-full);
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
 }
 
 .distribution-count {
   text-align: right;
   font-weight: 700;
-  color: var(--gray-900);
+  color: var(--text-primary);
   font-size: 1rem;
 }
 
@@ -222,50 +225,50 @@
 }
 
 .package-list::-webkit-scrollbar-track {
-  background: var(--beige-100);
+  background: var(--neutral-100);
   border-radius: var(--radius-full);
 }
 
 .package-list::-webkit-scrollbar-thumb {
-  background: var(--primary-400);
+  background: var(--neutral-400);
   border-radius: var(--radius-full);
 }
 
 .package-list::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-500);
+  background: var(--neutral-500);
 }
 
 .package-item {
   padding: var(--spacing-lg);
-  background: var(--beige-100);
+  background: var(--neutral-100);
   border-radius: var(--radius-xl);
-  border-left: 4px solid var(--primary-500);
+  border-left: 4px solid var(--neutral-500);
   transition: all var(--transition-base);
 }
 
 .package-item:hover {
   transform: translateX(4px);
   box-shadow: var(--shadow-sm);
-  border-left-color: var(--primary-600);
+  border-left-color: var(--neutral-600);
 }
 
 .package-value {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--primary-600);
+  color: var(--neutral-700);
   margin-bottom: var(--spacing-xs);
   line-height: 1.2;
 }
 
 .package-details {
   font-size: 0.9rem;
-  color: var(--gray-600);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .no-data {
   text-align: center;
-  color: var(--gray-500);
+  color: var(--text-secondary);
   padding: var(--spacing-3xl);
   font-style: italic;
   font-size: 1rem;

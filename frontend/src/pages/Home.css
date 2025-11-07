@@ -1,10 +1,13 @@
 .home {
   width: 100%;
+  min-height: 100vh;
+  position: relative;
+  background: transparent;
 }
 
 .hero {
-  background: var(--beige-200);
-  color: var(--gray-900);
+  background: transparent;
+  color: var(--text-primary);
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -12,18 +15,6 @@
   position: relative;
   padding: var(--spacing-3xl) 0;
   overflow: hidden;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: 
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.5) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.1) 0%, transparent 50%);
-  pointer-events: none;
 }
 
 .hero .container {
@@ -41,13 +32,13 @@
   margin-bottom: var(--spacing-lg);
   line-height: 1.1;
   letter-spacing: -0.03em;
-  color: var(--gray-900);
+  color: var(--text-primary);
 }
 
 .hero-subtitle {
   font-size: 1.5rem;
   margin-bottom: var(--spacing-2xl);
-  color: var(--gray-700);
+  color: var(--text-secondary);
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
@@ -78,32 +69,35 @@
 }
 
 .btn-primary {
-  background: var(--primary-600);
+  background: var(--neutral-700);
   color: white;
   box-shadow: var(--shadow-md);
 }
 
 .btn-primary:hover {
-  background: var(--primary-700);
+  background: var(--neutral-800);
   transform: scale(1.02);
   box-shadow: var(--shadow-lg);
 }
 
 .btn-secondary {
-  background: transparent;
-  color: var(--primary-600);
-  border: 2px solid var(--primary-600);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-tertiary);
+  border: 2px solid var(--neutral-300);
+  backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover {
-  background: var(--primary-50);
-  border-color: var(--primary-700);
+  background: rgba(255, 255, 255, 1);
+  border-color: var(--neutral-400);
   transform: scale(1.02);
+  box-shadow: var(--shadow-md);
 }
 
 .features {
   padding: var(--spacing-3xl) 0;
-  background: var(--beige-100);
+  background: transparent;
+  position: relative;
 }
 
 .section-title {
@@ -111,14 +105,14 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: var(--spacing-md);
-  color: var(--gray-900);
+  color: var(--text-primary);
   letter-spacing: -0.02em;
 }
 
 .section-subtitle {
   text-align: center;
   font-size: 1.125rem;
-  color: var(--gray-700);
+  color: var(--text-secondary);
   margin-bottom: var(--spacing-2xl);
   max-width: 600px;
   margin-left: auto;
@@ -133,13 +127,14 @@
 }
 
 .feature-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   padding: var(--spacing-xl);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-md);
   text-align: center;
   transition: all var(--transition-base);
-  border: 1px solid var(--beige-300);
+  border: 1px solid var(--neutral-200);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -148,13 +143,14 @@
 .feature-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
-  border-color: var(--accent-purple-lighter);
+  border-color: var(--neutral-300);
+  background: rgba(255, 255, 255, 1);
 }
 
 .feature-card h3 {
   margin-top: 0;
   margin-bottom: var(--spacing-lg);
-  color: var(--gray-900);
+  color: var(--text-primary);
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.2;
@@ -174,7 +170,7 @@
 }
 
 .feature-card p {
-  color: var(--gray-700);
+  color: var(--text-secondary);
   line-height: 1.7;
   font-size: 1rem;
   margin: 0;
@@ -182,42 +178,25 @@
 }
 
 .cta {
-  background: var(--beige-200);
+  background: transparent;
   padding: var(--spacing-3xl) 0;
   text-align: center;
-  border-top: 1px solid var(--beige-300);
+  border-top: 1px solid var(--neutral-200);
   position: relative;
   overflow: hidden;
-}
-
-.cta::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: 
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.cta h2,
-.cta p {
-  position: relative;
-  z-index: 1;
 }
 
 .cta h2 {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: var(--spacing-lg);
-  color: var(--gray-900);
+  color: var(--text-primary);
   letter-spacing: -0.02em;
 }
 
 .cta p {
   font-size: 1.25rem;
-  color: var(--gray-700);
+  color: var(--text-secondary);
   margin-bottom: var(--spacing-xl);
   max-width: 600px;
   margin-left: auto;

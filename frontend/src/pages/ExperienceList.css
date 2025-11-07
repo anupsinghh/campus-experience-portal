@@ -1,25 +1,32 @@
 .experience-list {
   min-height: 60vh;
-  background: var(--beige-200);
+  background: transparent;
   padding: var(--spacing-2xl) 0;
+  position: relative;
+}
+
+.experience-list .container {
+  position: relative;
+  z-index: 1;
 }
 
 .page-title {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: var(--spacing-sm);
-  color: var(--gray-900);
+  color: var(--text-primary);
   letter-spacing: -0.02em;
 }
 
 .page-subtitle {
   font-size: 1.25rem;
-  color: var(--gray-700);
+  color: var(--text-secondary);
   margin-bottom: var(--spacing-xl);
   line-height: 1.6;
 }
 
 .loading,
+.loading-inline,
 .error,
 .no-results {
   text-align: center;
@@ -27,22 +34,36 @@
   font-size: 1.125rem;
 }
 
-.loading {
-  color: var(--gray-600);
+.loading,
+.loading-inline {
+  color: var(--text-secondary);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-lg);
 }
 
-.loading::before {
+.loading-inline {
+  padding: var(--spacing-lg);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.loading::before,
+.loading-inline::before {
   content: '';
   width: 48px;
   height: 48px;
-  border: 4px solid var(--beige-300);
-  border-top-color: var(--primary-600);
+  border: 4px solid var(--neutral-200);
+  border-top-color: var(--neutral-700);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+.loading-inline::before {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
 }
 
 @keyframes spin {
@@ -52,9 +73,9 @@
 }
 
 .error {
-  color: var(--primary-700);
-  background: var(--primary-50);
-  border: 2px solid var(--primary-300);
+  color: var(--error-dark);
+  background: var(--error-light);
+  border: 2px solid var(--error);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   max-width: 600px;
@@ -62,9 +83,10 @@
 }
 
 .no-results {
-  color: var(--gray-700);
-  background: white;
-  border: 2px dashed var(--beige-400);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 2px dashed var(--neutral-300);
   border-radius: var(--radius-lg);
   padding: var(--spacing-3xl);
   max-width: 600px;

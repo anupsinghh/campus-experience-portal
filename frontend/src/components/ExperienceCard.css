@@ -1,6 +1,7 @@
 .experience-card {
-  background: white;
-  border: 1px solid var(--beige-300);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--neutral-200);
   border-radius: var(--radius-2xl);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-md);
@@ -16,7 +17,8 @@
 .experience-card:hover {
   box-shadow: var(--shadow-lg);
   transform: translateY(-4px);
-  border-color: var(--accent-purple-lighter);
+  border-color: var(--neutral-300);
+  background: rgba(255, 255, 255, 1);
 }
 
 .card-header {
@@ -38,14 +40,14 @@
 }
 
 .card-title a {
-  color: var(--gray-900);
+  color: var(--text-primary);
   text-decoration: none;
   transition: color var(--transition-base);
   display: block;
 }
 
 .card-title a:hover {
-  color: var(--primary-600);
+  color: var(--text-tertiary);
 }
 
 .offer-badge {
@@ -90,7 +92,7 @@
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-md);
   font-size: 0.85rem;
-  color: var(--gray-600);
+  color: var(--text-secondary);
   justify-content: center;
 }
 
@@ -99,19 +101,19 @@
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
-  background-color: var(--beige-100);
+  background-color: var(--neutral-100);
   border-radius: var(--radius-md);
-  border: 1px solid var(--beige-300);
+  border: 1px solid var(--neutral-200);
 }
 
 .meta-item strong {
-  color: var(--gray-900);
+  color: var(--text-primary);
   font-weight: 600;
   font-size: 0.8rem;
 }
 
 .card-tips {
-  color: var(--gray-700);
+  color: var(--text-secondary);
   margin-bottom: var(--spacing-md);
   line-height: 1.6;
   font-size: 0.875rem;
@@ -127,18 +129,19 @@
   justify-content: space-between;
   align-items: center;
   padding-top: var(--spacing-md);
-  border-top: 1px solid var(--beige-200);
+  border-top: 1px solid var(--neutral-200);
   margin-top: auto;
 }
 
 .card-author {
   font-size: 0.8rem;
-  color: var(--gray-500);
+  color: var(--text-secondary);
   font-style: italic;
+  opacity: 0.8;
 }
 
 .card-link {
-  color: var(--primary-600);
+  color: var(--text-tertiary);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.85rem;
@@ -149,7 +152,7 @@
 }
 
 .card-link:hover {
-  color: var(--primary-700);
+  color: var(--neutral-800);
   gap: var(--spacing-sm);
 }
 

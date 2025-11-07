@@ -1,19 +1,20 @@
+import { memo } from 'react';
 import './FilterBar.css';
 
-function FilterBar({ filters, onFilterChange, onSearchChange, searchTerm }) {
+const FilterBar = memo(function FilterBar({ filters, onFilterChange, onSearchChange, onClearFilters, searchTerm }) {
   return (
     <div className="filter-bar">
-      <div className="filter-group search-input">
+      <div className="filter-group search-group">
         <input
           type="text"
           placeholder="Search experiences..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="search-input"
+          className="search-field"
         />
       </div>
 
-      <div className="filter-group company-filter">
+      <div className="filter-group">
         <input
           type="text"
           placeholder="Company"
@@ -54,19 +55,13 @@ function FilterBar({ filters, onFilterChange, onSearchChange, searchTerm }) {
       </div>
 
       <button
-        onClick={() => {
-          onSearchChange('');
-          onFilterChange('company', '');
-          onFilterChange('role', '');
-          onFilterChange('branch', '');
-          onFilterChange('year', '');
-        }}
+        onClick={onClearFilters}
         className="clear-filters-btn"
       >
         Clear Filters
       </button>
     </div>
   );
-}
+});
 
 export default FilterBar;

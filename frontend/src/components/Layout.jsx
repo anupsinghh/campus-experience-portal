@@ -24,7 +24,7 @@ function Layout({ children }) {
       
       <footer className="footer">
         <div className="container">
-          <p>&copy; 2024 Placement Portal. Helping students prepare for campus placements.</p>
+          <p>&copy; 2025 Placement Portal. Helping students prepare for campus placements.</p>
         </div>
       </footer>
     </div>

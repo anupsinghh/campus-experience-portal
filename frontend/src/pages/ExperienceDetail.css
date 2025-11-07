@@ -1,6 +1,6 @@
 .experience-detail {
   min-height: 60vh;
-  background: var(--beige-200);
+  background: transparent;
   padding: var(--spacing-2xl) 0;
 }
 
@@ -8,7 +8,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-sm);
-  color: var(--primary-600);
+  color: var(--text-tertiary);
   text-decoration: none;
   margin-bottom: var(--spacing-xl);
   font-weight: 600;
@@ -19,8 +19,8 @@
 }
 
 .back-link:hover {
-  color: var(--primary-700);
-  background-color: var(--primary-50);
+  color: var(--neutral-800);
+  background-color: var(--neutral-100);
   transform: translateX(-4px);
 }
 
@@ -35,20 +35,21 @@
 }
 
 .detail-header {
-  background: white;
-  color: var(--gray-900);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  color: var(--text-primary);
   padding: var(--spacing-2xl);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-md);
   margin-bottom: var(--spacing-xl);
-  border: 1px solid var(--beige-300);
+  border: 1px solid var(--neutral-200);
 }
 
 .detail-title {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: var(--spacing-lg);
-  color: var(--gray-900);
+  color: var(--text-primary);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
@@ -62,25 +63,25 @@
 
 .meta-badge {
   padding: var(--spacing-sm) var(--spacing-lg);
-  background-color: var(--beige-100);
+  background-color: var(--neutral-100);
   border-radius: var(--radius-full);
   font-size: 0.875rem;
-  color: var(--gray-700);
+  color: var(--text-secondary);
   font-weight: 600;
-  border: 1px solid var(--beige-300);
+  border: 1px solid var(--neutral-200);
   transition: all var(--transition-base);
 }
 
 .meta-badge:hover {
-  background-color: var(--beige-200);
+  background-color: var(--neutral-200);
   transform: translateY(-2px);
 }
 
 .meta-badge.highlight {
-  background-color: var(--primary-600);
+  background-color: var(--neutral-700);
   color: white;
   font-weight: 700;
-  border-color: var(--primary-600);
+  border-color: var(--neutral-700);
 }
 
 .offer-badge {
@@ -118,24 +119,26 @@
 }
 
 .detail-section {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   padding: var(--spacing-2xl);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--beige-300);
+  border: 1px solid var(--neutral-200);
   transition: box-shadow var(--transition-base);
 }
 
 .detail-section:hover {
   box-shadow: var(--shadow-lg);
+  background: rgba(255, 255, 255, 1);
 }
 
 .detail-section h2 {
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: var(--spacing-xl);
-  color: var(--gray-900);
-  border-bottom: 3px solid var(--primary-500);
+  color: var(--text-primary);
+  border-bottom: 3px solid var(--neutral-500);
   padding-bottom: var(--spacing-md);
   letter-spacing: -0.01em;
 }
@@ -147,17 +150,17 @@
 }
 
 .round-card {
-  border: 2px solid var(--beige-300);
+  border: 2px solid var(--neutral-200);
   border-radius: var(--radius-xl);
   padding: var(--spacing-xl);
-  background: var(--beige-100);
+  background: var(--neutral-100);
   transition: all var(--transition-base);
   position: relative;
-  border-left: 4px solid var(--primary-500);
+  border-left: 4px solid var(--neutral-500);
 }
 
 .round-card:hover {
-  border-color: var(--accent-purple-lighter);
+  border-color: var(--neutral-300);
   transform: translateX(4px);
   box-shadow: var(--shadow-sm);
 }
@@ -165,7 +168,7 @@
 .round-header h3 {
   margin-top: 0;
   margin-bottom: var(--spacing-lg);
-  color: var(--gray-900);
+  color: var(--text-primary);
   font-size: 1.5rem;
   font-weight: 700;
 }
@@ -177,7 +180,7 @@
 
 .round-questions h4,
 .round-feedback h4 {
-  color: var(--gray-800);
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: var(--spacing-md);
@@ -195,7 +198,7 @@
 
 .round-questions li {
   margin-bottom: var(--spacing-md);
-  color: var(--gray-700);
+  color: var(--text-secondary);
   position: relative;
   padding-left: var(--spacing-lg);
 }
@@ -204,24 +207,24 @@
   content: '→';
   position: absolute;
   left: 0;
-  color: var(--primary-600);
+  color: var(--text-tertiary);
   font-weight: bold;
 }
 
 .round-feedback p {
-  color: var(--gray-700);
+  color: var(--text-secondary);
   line-height: 1.9;
   margin: 0;
   font-size: 0.95rem;
 }
 
 .tips-content {
-  color: var(--gray-800);
+  color: var(--text-primary);
   line-height: 1.9;
   font-size: 1.125rem;
   padding: var(--spacing-xl);
-  background: var(--primary-50);
-  border-left: 4px solid var(--primary-500);
+  background: var(--neutral-100);
+  border-left: 4px solid var(--neutral-500);
   border-radius: var(--radius-md);
 }
 
@@ -233,27 +236,27 @@
 
 .info-item {
   padding: var(--spacing-lg);
-  background: var(--beige-100);
+  background: var(--neutral-100);
   border-radius: var(--radius-lg);
-  color: var(--gray-700);
-  border: 1px solid var(--beige-300);
+  color: var(--text-secondary);
+  border: 1px solid var(--neutral-200);
   transition: all var(--transition-base);
 }
 
 .info-item:hover {
-  border-color: var(--accent-purple-lighter);
+  border-color: var(--neutral-300);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
 
 .info-item strong {
-  color: var(--gray-900);
+  color: var(--text-primary);
   display: block;
   margin-bottom: var(--spacing-sm);
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--gray-600);
+  color: var(--text-secondary);
 }
 
 @media (max-width: 768px) {
