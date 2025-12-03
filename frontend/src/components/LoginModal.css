@@ -1,0 +1,212 @@
+.login-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.login-modal-shell {
+  width: 100%;
+  max-width: 960px;
+  min-height: 480px;
+  max-height: 640px;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 32px;
+  box-shadow: 0 32px 80px rgba(15, 23, 42, 0.25);
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.login-modal-left {
+  padding: 2.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.75rem;
+}
+
+.login-modal-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.login-modal-star {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.login-modal-title {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.login-modal-subtitle {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.98rem;
+}
+
+.login-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.login-modal-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.login-modal-radio-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.login-modal-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.login-modal-input {
+  border-radius: 999px;
+  border: 1px solid var(--neutral-300);
+  padding: 0.75rem 1.1rem;
+  font-size: 0.95rem;
+  outline: none;
+  background: rgba(248, 250, 252, 0.9);
+  transition: all var(--transition-base);
+}
+
+.login-modal-input:focus {
+  border-color: var(--neutral-600);
+  box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.5);
+  background: #ffffff;
+}
+
+.login-modal-error {
+  font-size: 0.85rem;
+  color: #b91c1c;
+  background: #fee2e2;
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+}
+
+.login-modal-button {
+  margin-top: 0.5rem;
+  width: 100%;
+  border-radius: 999px;
+  border: none;
+  padding: 0.85rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  background: var(--neutral-900);
+  color: #ffffff;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.login-modal-button:hover:enabled {
+  background: var(--neutral-800);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.login-modal-button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.login-modal-footer-text {
+  margin: 0;
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.login-modal-link {
+  font-weight: 600;
+  color: var(--neutral-800);
+  cursor: pointer;
+}
+
+.login-modal-right {
+  position: relative;
+  background: radial-gradient(circle at 0% 0%, rgba(129, 140, 248, 0.15), transparent),
+    radial-gradient(circle at 100% 100%, rgba(244, 114, 182, 0.18), transparent),
+    rgba(15, 23, 42, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.login-modal-shape {
+  position: absolute;
+  border-radius: 32px;
+  background: rgba(148, 163, 184, 0.35);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.login-modal-shape-main {
+  width: 260px;
+  height: 260px;
+  transform: rotate(-18deg);
+}
+
+.login-modal-shape-small {
+  width: 96px;
+  height: 96px;
+  top: 18%;
+  right: 18%;
+}
+
+.login-modal-quote {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 2.5rem;
+  right: 2.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .login-modal-shell {
+    max-width: 100%;
+    margin: 0 1rem;
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
+  }
+
+  .login-modal-left {
+    padding: 2rem 1.5rem;
+  }
+
+  .login-modal-right {
+    display: none;
+  }
+}
+
+

@@ -89,6 +89,30 @@
   transform: translateY(-1px);
 }
 
+.nav-auth {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.nav-user {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.nav-button {
+  border: none;
+  background: rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+}
+
+.nav-button-ghost {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+
 .main-content {
   flex: 1;
   padding: var(--spacing-2xl) 0; /* default when header is not fixed */

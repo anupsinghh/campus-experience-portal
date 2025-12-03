@@ -1,7 +1,29 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
+import { useAuth } from '../context/AuthContext.jsx';
+import { useAuthModals } from '../context/AuthModalContext.jsx';
 
 function Home() {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const { openLogin } = useAuthModals();
+
+  const handleBrowseClick = () => {
+    if (isAuthenticated) {
+      navigate('/experiences');
+    } else {
+      openLogin();
+    }
+  };
+
+  const handleShareClick = () => {
+    if (isAuthenticated) {
+      navigate('/create');
+    } else {
+      openLogin();
+    }
+  };
+
   return (
     <div className="home">
       <section className="hero">
@@ -11,12 +33,12 @@ function Home() {
             Your collaborative space for sharing and exploring campus placement experiences
           </p>
           <div className="hero-actions">
-            <Link to="/experiences" className="btn btn-primary">
+            <button type="button" className="btn btn-primary" onClick={handleBrowseClick}>
               Browse Experiences
-            </Link>
-            <Link to="/create" className="btn btn-secondary">
+            </button>
+            <button type="button" className="btn btn-secondary" onClick={handleShareClick}>
               Share Your Experience
-            </Link>
+            </button>
           </div>
         </div>
       </section>
@@ -54,9 +76,9 @@ function Home() {
         <div className="container">
           <h2>Ready to get started?</h2>
           <p>Join the community and help fellow students prepare for their dream placements.</p>
-          <Link to="/create" className="btn btn-primary">
+          <button type="button" className="btn btn-primary" onClick={handleShareClick}>
             Share Your First Experience
-          </Link>
+          </button>
         </div>
       </section>
     </div>

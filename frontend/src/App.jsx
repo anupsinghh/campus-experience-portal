@@ -5,22 +5,47 @@ import ExperienceList from './pages/ExperienceList';
 import ExperienceDetail from './pages/ExperienceDetail';
 import CreateExperience from './pages/CreateExperience';
 import Insights from './pages/Insights';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+import { AuthModalProvider } from './context/AuthModalContext.jsx';
 import './App.css';
 
 function App() {
-  return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/experiences" element={<ExperienceList />} />
-          <Route path="/experiences/:id" element={<ExperienceDetail />} />
-          <Route path="/create" element={<CreateExperience />} />
-          <Route path="/insights" element={<Insights />} />
-        </Routes>
-      </Layout>
-    </Router>
-  );
+    return (
+        <Router>
+            <AuthModalProvider>
+                <Layout>
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route
+                            path="/experiences"
+                            element={
+                                <ProtectedRoute>
+                                    <ExperienceList />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/experiences/:id"
+                            element={
+                                <ProtectedRoute>
+                                    <ExperienceDetail />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/create"
+                            element={
+                                <ProtectedRoute>
+                                    <CreateExperience />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path="/insights" element={<Insights />} />
+                    </Routes>
+                </Layout>
+            </AuthModalProvider>
+        </Router>
+    );
 }
 
 export default App;

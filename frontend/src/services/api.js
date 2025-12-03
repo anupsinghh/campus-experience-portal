@@ -20,23 +20,59 @@ const API_BASE_URL = resolvedBase.replace(/\/$/, '') + '/api';
 // Helper function for API calls
 const fetchAPI = async (endpoint, options = {}) => {
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
-    });
+    const { withAuth, ...restOptions } = options;
+    const headers = {
+      'Content-Type': 'application/json',
+      ...restOptions.headers,
+    };
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.statusText}`);
+    // Attach Authorization header when requested and running in the browser
+    if (withAuth && typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
     }
 
-    return await response.json();
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      headers,
+      ...restOptions,
+    });
+
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      const message =
+        (data && (data.error || data.message)) ||
+        `API error: ${response.status} ${response.statusText}`;
+      throw new Error(message);
+    }
+
+    return data;
   } catch (error) {
     console.error('API call failed:', error);
     throw error;
   }
+};
+
+// Auth API
+export const authAPI = {
+  login: (email, password) =>
+    fetchAPI('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    }),
+
+  register: (payload) =>
+    fetchAPI('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  me: () =>
+    fetchAPI('/auth/me', {
+      withAuth: true,
+    }),
 };
 
 // Experiences API
@@ -59,17 +95,20 @@ export const experiencesAPI = {
     fetchAPI('/experiences', {
       method: 'POST',
       body: JSON.stringify(experienceData),
+      withAuth: true, // optional auth – backend treats token as optional
     }),
 
   update: (id, experienceData) =>
     fetchAPI(`/experiences/${id}`, {
       method: 'PUT',
       body: JSON.stringify(experienceData),
+      withAuth: true,
     }),
 
   delete: (id) =>
     fetchAPI(`/experiences/${id}`, {
       method: 'DELETE',
+      withAuth: true,
     }),
 };
 
