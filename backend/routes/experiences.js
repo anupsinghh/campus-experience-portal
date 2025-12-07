@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
     }
 
     let experiences = await Experience.find(query)
-      .populate('author', 'name email role branch')
+      .populate('author', 'name username email role branch')
       .sort({ createdAt: -1 });
 
     // Search across multiple fields (client-side for now, can be optimized with MongoDB text search)
@@ -57,7 +57,7 @@ router.get('/', async (req, res) => {
 router.get('/my', protect, async (req, res) => {
   try {
     const experiences = await Experience.find({ author: req.user._id })
-      .populate('author', 'name email role branch')
+      .populate('author', 'name username email role branch')
       .sort({ createdAt: -1 });
 
     res.json(experiences);
@@ -78,7 +78,7 @@ router.get('/:id', async (req, res) => {
     }
 
     const experience = await Experience.findById(req.params.id)
-      .populate('author', 'name email role branch graduationYear currentCompany');
+      .populate('author', 'name username email role branch graduationYear currentCompany');
 
     if (!experience) {
       return res.status(404).json({ error: 'Experience not found' });

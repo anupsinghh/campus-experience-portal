@@ -10,28 +10,53 @@ const router = express.Router();
 // @access  Public
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, role, branch, graduationYear, isAlumni } = req.body;
+    const { name, username, email, password, role, branch, graduationYear, isAlumni } = req.body;
 
     // Validation
-    if (!name || !email || !password) {
+    if (!name || !username || !email || !password) {
       return res.status(400).json({
         success: false,
-        error: 'Please provide name, email, and password',
+        error: 'Please provide name, username, email, and password',
       });
     }
 
-    // Check if user exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
+    // Validate username format
+    if (!/^[a-z0-9_]+$/.test(username.toLowerCase())) {
+      return res.status(400).json({
+        success: false,
+        error: 'Username can only contain lowercase letters, numbers, and underscores',
+      });
+    }
+
+    if (username.length < 3 || username.length > 20) {
+      return res.status(400).json({
+        success: false,
+        error: 'Username must be between 3 and 20 characters',
+      });
+    }
+
+    // Check if email exists
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
       return res.status(400).json({
         success: false,
         error: 'User already exists with this email',
       });
     }
 
+    // Check if username exists
+    const usernameExists = await User.findOne({ username: username.toLowerCase() });
+    if (usernameExists) {
+      return res.status(400).json({
+        success: false,
+        error: 'This username is already taken',
+      });
+    }
+
     // Create user
     const user = await User.create({
       name,
+      username: username.toLowerCase(),
       email,
       password,
       role: role || (isAlumni ? 'alumni' : 'student'),
@@ -49,6 +74,7 @@ router.post('/register', async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role,
         branch: user.branch,
@@ -70,18 +96,23 @@ router.post('/register', async (req, res) => {
 // @access  Public
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
 
     // Validation
-    if (!email || !password) {
+    if (!identifier || !password) {
       return res.status(400).json({
         success: false,
-        error: 'Please provide email and password',
+        error: 'Please provide email/username and password',
       });
     }
 
-    // Check for user and include password for comparison
-    const user = await User.findOne({ email }).select('+password');
+    // Check for user by email or username and include password for comparison
+    const user = await User.findOne({
+      $or: [
+        { email: identifier.toLowerCase() },
+        { username: identifier.toLowerCase() }
+      ]
+    }).select('+password');
 
     if (!user) {
       return res.status(401).json({
@@ -109,6 +140,7 @@ router.post('/login', async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role,
         branch: user.branch,
@@ -138,6 +170,7 @@ router.get('/me', protect, async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role,
         branch: user.branch,

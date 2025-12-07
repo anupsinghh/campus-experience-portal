@@ -7,6 +7,16 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Please provide a name'],
     trim: true,
   },
+  username: {
+    type: String,
+    required: [true, 'Username is required'],
+    unique: true,
+    lowercase: true,
+    trim: true,
+    minlength: [3, 'Username must be at least 3 characters'],
+    maxlength: [20, 'Username cannot exceed 20 characters'],
+    match: [/^[a-z0-9_]+$/, 'Username can only contain lowercase letters, numbers, and underscores'],
+  },
   email: {
     type: String,
     required: [true, 'Please provide an email'],
@@ -50,6 +60,10 @@ const userSchema = new mongoose.Schema({
       type: String,
       trim: true,
     },
+    twitter: {
+      type: String,
+      trim: true,
+    },
   },
   isAlumni: {
     type: Boolean,
@@ -60,18 +74,18 @@ const userSchema = new mongoose.Schema({
 });
 
 // Hash password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
-  
+
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
 // Method to compare password
-userSchema.methods.matchPassword = async function(enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

@@ -7,6 +7,7 @@ const companiesRoutes = require('./routes/companies');
 const insightsRoutes = require('./routes/insights');
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
+const commentsRoutes = require('./routes/comments');
 
 // Connect to MongoDB
 connectDB();
@@ -38,6 +39,8 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/experiences/:experienceId/comments', commentsRoutes);
+app.use('/api/comments', commentsRoutes);
 app.use('/api/experiences', experiencesRoutes);
 app.use('/api/companies', companiesRoutes);
 app.use('/api/insights', insightsRoutes);
