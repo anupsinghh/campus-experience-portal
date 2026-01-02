@@ -4,7 +4,7 @@ const getDefaultApiBase = () => {
     const host = window.location.hostname || '';
     // If deployed on Vercel (production), use the Render backend
     if (host.endsWith('vercel.app')) {
-      return 'https://placement-portal-backend-wq06.onrender.com';
+      return 'https://campus-experience-portal.onrender.com';
     }
   }
   // Local dev fallback
