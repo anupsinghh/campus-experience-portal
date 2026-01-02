@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     trim: true,
-    match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email'],
+    match: [/^[a-zA-Z0-9._-]+@marwadiuniversity\.(ac|edu)\.in$/, 'Email must be from @marwadiuniversity.ac.in or @marwadiuniversity.edu.in domain'],
   },
   password: {
     type: String,

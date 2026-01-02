@@ -22,11 +22,18 @@ router.get('/', async (req, res) => {
       });
     });
 
-    // Extract package values (remove 'LPA' and convert to number)
+    // Extract package values (remove 'LPA', '$', 'USD' and convert to number)
     const packages = experiences
       .filter(exp => exp.package)
       .map(exp => {
-        const packageValue = parseFloat(exp.package.replace(' LPA', '').replace('LPA', '').trim());
+        // Remove currency symbols and text, keep only numbers
+        let packageStr = exp.package.toString()
+          .replace(/[$₹]/g, '') // Remove $ and ₹ symbols
+          .replace(/LPA/gi, '') // Remove LPA
+          .replace(/USD/gi, '') // Remove USD
+          .replace(/INR/gi, '') // Remove INR
+          .trim();
+        const packageValue = parseFloat(packageStr);
         return {
           value: packageValue,
           company: exp.company,
@@ -100,6 +107,70 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching insights:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/insights/questions - Search questions by company or role
+router.get('/questions', async (req, res) => {
+  try {
+    const { company, role } = req.query;
+    
+    // Build query
+    const query = {};
+    if (company) {
+      query.company = { $regex: company, $options: 'i' };
+    }
+    if (role) {
+      query.role = { $regex: role, $options: 'i' };
+    }
+
+    const experiences = await Experience.find(query);
+
+    // Get available roles for the selected company
+    let availableRoles = [];
+    if (company) {
+      const companyExperiences = await Experience.find({ company: { $regex: company, $options: 'i' } });
+      availableRoles = [...new Set(companyExperiences.map(exp => exp.role).filter(Boolean))].sort();
+    }
+
+    // Extract all questions with metadata
+    const allQuestions = [];
+    experiences.forEach(exp => {
+      exp.rounds.forEach(round => {
+        round.questions.forEach(question => {
+          // Infer difficulty level from round name
+          let level = 'Medium'; // default
+          const roundNameLower = round.roundName.toLowerCase();
+          if (roundNameLower.includes('easy') || roundNameLower.includes('basic') || roundNameLower.includes('screening')) {
+            level = 'Easy';
+          } else if (roundNameLower.includes('hard') || roundNameLower.includes('system design') || roundNameLower.includes('advanced') || roundNameLower.includes('final')) {
+            level = 'Hard';
+          } else if (roundNameLower.includes('medium') || roundNameLower.includes('technical')) {
+            level = 'Medium';
+          }
+
+          allQuestions.push({
+            question,
+            company: exp.company,
+            role: exp.role,
+            roundNumber: round.roundNumber,
+            roundName: round.roundName,
+            level: level,
+            year: exp.year
+          });
+        });
+      });
+    });
+
+    res.json({
+      success: true,
+      questions: allQuestions,
+      total: allQuestions.length,
+      availableRoles: availableRoles
+    });
+  } catch (error) {
+    console.error('Error fetching questions:', error);
     res.status(500).json({ error: error.message });
   }
 });

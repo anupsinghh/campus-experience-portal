@@ -1,7 +1,30 @@
 const express = require('express');
 const router = express.Router();
 const Experience = require('../models/Experience');
+const Report = require('../models/Report');
 const { protect } = require('../middleware/auth');
+
+// GET /api/experiences/filters - Get unique filter options
+router.get('/filters', async (req, res) => {
+  try {
+    const experiences = await Experience.find({}, 'company role branch year');
+    
+    const companies = [...new Set(experiences.map(exp => exp.company).filter(Boolean))].sort();
+    const roles = [...new Set(experiences.map(exp => exp.role).filter(Boolean))].sort();
+    const branches = [...new Set(experiences.map(exp => exp.branch).filter(Boolean))].sort();
+    const years = [...new Set(experiences.map(exp => exp.year).filter(Boolean))].sort((a, b) => b - a);
+    
+    res.json({
+      companies,
+      roles,
+      branches,
+      years
+    });
+  } catch (error) {
+    console.error('Error fetching filter options:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // GET /api/experiences - Get all experiences with optional filters
 router.get('/', async (req, res) => {
@@ -10,6 +33,10 @@ router.get('/', async (req, res) => {
 
     // Build query
     const query = {};
+
+    // Only show approved experiences to regular users
+    // Admins can see all via admin routes
+    query.moderationStatus = { $in: ['approved', null] }; // null for backward compatibility
 
     if (company) {
       query.company = { $regex: company, $options: 'i' };
@@ -159,6 +186,7 @@ router.post('/', async (req, res) => {
       offerStatus: offerStatus || 'Pending',
       author: authorId,
       authorName: authorName,
+      moderationStatus: 'pending', // All new experiences require moderation
     });
 
     const populatedExperience = await Experience.findById(experience._id)
@@ -217,6 +245,59 @@ router.delete('/:id', protect, async (req, res) => {
     res.json({ message: 'Experience deleted successfully' });
   } catch (error) {
     console.error('Error deleting experience:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/experiences/:id/report - Report an experience (Optional auth)
+router.post('/:id/report', async (req, res) => {
+  try {
+    const { reason, description } = req.body;
+
+    if (!reason) {
+      return res.status(400).json({ error: 'Reason is required' });
+    }
+
+    const experience = await Experience.findById(req.params.id);
+    if (!experience) {
+      return res.status(404).json({ error: 'Experience not found' });
+    }
+
+    // Try to get user from token if provided (optional auth)
+    let reportedBy = null;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      try {
+        const jwt = require('jsonwebtoken');
+        const User = require('../models/User');
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key-change-in-production');
+        const user = await User.findById(decoded.id);
+        if (user) {
+          reportedBy = user._id;
+        }
+      } catch (err) {
+        // Token invalid or expired, continue with anonymous report
+      }
+    }
+
+    const report = await Report.create({
+      experience: experience._id,
+      reportedBy,
+      reason,
+      description: description || '',
+    });
+
+    const populated = await Report.findById(report._id)
+      .populate('experience', 'company role')
+      .populate('reportedBy', 'name username');
+
+    res.status(201).json({
+      success: true,
+      message: 'Report submitted successfully',
+      data: populated,
+    });
+  } catch (error) {
+    console.error('Error creating report:', error);
     res.status(500).json({ error: error.message });
   }
 });

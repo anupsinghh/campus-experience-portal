@@ -35,6 +35,15 @@ router.post('/register', async (req, res) => {
       });
     }
 
+    // Validate email domain
+    const emailRegex = /^[a-zA-Z0-9._-]+@marwadiuniversity\.(ac|edu)\.in$/;
+    if (!emailRegex.test(email.toLowerCase())) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email must be from @marwadiuniversity.ac.in or @marwadiuniversity.edu.in domain',
+      });
+    }
+
     // Check if email exists
     const emailExists = await User.findOne({ email });
     if (emailExists) {
@@ -103,6 +112,53 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Please provide email/username and password',
+      });
+    }
+
+    // Hardcoded admin credentials check
+    const ADMIN_EMAIL = 'admin@marwadiuniversity.ac.in';
+    const ADMIN_USERNAME = 'admin';
+    const ADMIN_PASSWORD = 'admin123'; // Hardcoded for now
+
+    if ((identifier.toLowerCase() === ADMIN_EMAIL || identifier.toLowerCase() === ADMIN_USERNAME) && 
+        password === ADMIN_PASSWORD) {
+      // Check if admin user exists, if not create it
+      let adminUser = await User.findOne({ 
+        $or: [
+          { email: ADMIN_EMAIL },
+          { username: ADMIN_USERNAME }
+        ]
+      });
+
+      if (!adminUser) {
+        adminUser = await User.create({
+          name: 'Admin',
+          username: ADMIN_USERNAME,
+          email: ADMIN_EMAIL,
+          password: ADMIN_PASSWORD,
+          role: 'admin',
+        });
+      } else if (adminUser.role !== 'admin') {
+        // Update existing user to admin if needed
+        adminUser.role = 'admin';
+        await adminUser.save();
+      }
+
+      const token = generateToken(adminUser._id);
+      return res.json({
+        success: true,
+        token,
+        user: {
+          id: adminUser._id,
+          name: adminUser.name,
+          username: adminUser.username,
+          email: adminUser.email,
+          role: adminUser.role,
+          branch: adminUser.branch,
+          graduationYear: adminUser.graduationYear,
+          isAlumni: adminUser.isAlumni,
+          currentCompany: adminUser.currentCompany,
+        },
       });
     }
 

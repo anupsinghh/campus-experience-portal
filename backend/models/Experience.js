@@ -88,6 +88,23 @@ const experienceSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  moderationStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending',
+    index: true,
+  },
+  moderationNotes: {
+    type: String,
+    trim: true,
+  },
+  moderatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  moderatedAt: {
+    type: Date,
+  },
 }, {
   timestamps: true,
 });
