@@ -34,13 +34,30 @@ export function AuthProvider({ children }) {
     const init = async () => {
       try {
         if (typeof window === 'undefined') {
+          if (isMounted) {
+            setInitializing(false);
+          }
           return;
         }
         const token = localStorage.getItem('token');
         if (!token) {
+          // No token, user is not authenticated
+          if (isMounted) {
+            setUser(null);
+            setInitializing(false);
+          }
           return;
         }
+        // Token exists, validate it
         await refreshUser();
+      } catch (error) {
+        console.error('Error during auth initialization:', error);
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token');
+        }
+        if (isMounted) {
+          setUser(null);
+        }
       } finally {
         if (isMounted) {
           setInitializing(false);

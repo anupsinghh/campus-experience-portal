@@ -10,7 +10,7 @@ function Layout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, initializing, logout } = useAuth();
   const { openLogin, openRegister } = useAuthModals();
   const [pendingCount, setPendingCount] = useState(0);
   const [announcementsCount, setAnnouncementsCount] = useState(0);
@@ -24,7 +24,7 @@ function Layout({ children }) {
 
   // Fetch pending experiences count for admin
   useEffect(() => {
-    if (isAuthenticated && user?.role === 'admin') {
+    if (!initializing && isAuthenticated && user?.role === 'admin') {
       const fetchPendingCount = async () => {
         try {
           const response = await adminAPI.getStats();
@@ -40,11 +40,11 @@ function Layout({ children }) {
       const interval = setInterval(fetchPendingCount, 30000);
       return () => clearInterval(interval);
     }
-  }, [isAuthenticated, user]);
+  }, [initializing, isAuthenticated, user]);
 
   // Fetch announcements for all users (students, alumni, etc.)
   useEffect(() => {
-    if (isAuthenticated) {
+    if (!initializing && isAuthenticated) {
       const fetchAnnouncements = async () => {
         try {
           const response = await announcementsAPI.getAnnouncements();
@@ -70,7 +70,7 @@ function Layout({ children }) {
       const interval = setInterval(fetchAnnouncements, 60000);
       return () => clearInterval(interval);
     }
-  }, [isAuthenticated]);
+  }, [initializing, isAuthenticated]);
 
   // Close announcements dropdown when clicking outside
   useEffect(() => {
@@ -92,7 +92,12 @@ function Layout({ children }) {
               <h1>Placement Portal</h1>
             </Link>
             <nav className="nav">
-              {isHome && !isAuthenticated ? (
+              {initializing ? (
+                // Show minimal nav during initialization
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <div style={{ width: '20px', height: '20px', border: '2px solid #f3f3f3', borderTop: '2px solid #a855f7', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
+                </div>
+              ) : isHome && !isAuthenticated ? (
                 <>
                   <button
                     type="button"
@@ -288,6 +293,12 @@ function Layout({ children }) {
           <p>&copy; 2025 Placement Portal. Helping students prepare for campus placements.</p>
         </div>
       </footer>
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }
