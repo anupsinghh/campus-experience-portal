@@ -99,6 +99,9 @@ function AdminDashboard() {
     }
   }, [activeTab]);
 
+  // Note: Users are loaded when tab changes or when "Apply Filters" is clicked
+  // Auto-reload on filter change can be added later if needed
+
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setSearchParams({ tab });
@@ -437,16 +440,27 @@ function AdminDashboard() {
   const loadUsers = async () => {
     try {
       setUsersLoading(true);
+      console.log('Loading users with filters:', userFilters);
       const response = await adminAPI.getUsers(userFilters);
-      if (response.success && response.data) {
-        setUsers(Array.isArray(response.data) ? response.data : []);
+      console.log('Users API response:', response);
+      
+      if (response && response.success && response.data) {
+        const usersData = Array.isArray(response.data) ? response.data : [];
+        console.log('Setting users:', usersData.length);
+        setUsers(usersData);
       } else if (Array.isArray(response)) {
+        console.log('Setting users from array response:', response.length);
         setUsers(response);
+      } else if (response && response.data && Array.isArray(response.data)) {
+        console.log('Setting users from response.data:', response.data.length);
+        setUsers(response.data);
       } else {
+        console.warn('Unexpected response format:', response);
         setUsers([]);
       }
     } catch (error) {
       console.error('Error loading users:', error);
+      alert('Failed to load users: ' + (error.message || 'Unknown error'));
       setUsers([]);
     } finally {
       setUsersLoading(false);
@@ -1430,7 +1444,7 @@ function AdminDashboard() {
           {activeTab === 'users' && (
             <div className="users-section">
               <div className="section-header">
-                <h2>User Management</h2>
+                <h2>User Management {users.length > 0 && <span className="count-badge">({users.length})</span>}</h2>
                 <button className="btn-secondary" onClick={loadUsers}>
                   Refresh
                 </button>
