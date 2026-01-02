@@ -235,6 +235,18 @@ export const adminAPI = {
       method: 'POST',
       withAuth: true,
     }),
+
+  // Users
+  getUsers: (filters) => {
+    const params = new URLSearchParams();
+    if (filters?.branch) params.append('branch', filters.branch);
+    if (filters?.graduationYear) params.append('graduationYear', filters.graduationYear);
+    if (filters?.role) params.append('role', filters.role);
+    if (filters?.search) params.append('search', filters.search);
+    const queryString = params.toString();
+    return fetchAPI(`/admin/users${queryString ? `?${queryString}` : ''}`, { withAuth: true });
+  },
+  getUserFilters: () => fetchAPI('/admin/users/filters', { withAuth: true }),
 };
 
 // Public Announcements API
@@ -304,16 +316,4 @@ export const announcementsAPI = {
       method: 'DELETE',
       withAuth: true,
     }),
-
-  // Users
-  getUsers: (filters) => {
-    const params = new URLSearchParams();
-    if (filters?.branch) params.append('branch', filters.branch);
-    if (filters?.graduationYear) params.append('graduationYear', filters.graduationYear);
-    if (filters?.role) params.append('role', filters.role);
-    if (filters?.search) params.append('search', filters.search);
-    const queryString = params.toString();
-    return fetchAPI(`/admin/users${queryString ? `?${queryString}` : ''}`, { withAuth: true });
-  },
-  getUserFilters: () => fetchAPI('/admin/users/filters', { withAuth: true }),
 };
