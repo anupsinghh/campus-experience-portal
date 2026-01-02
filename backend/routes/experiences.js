@@ -145,6 +145,28 @@ router.post('/', async (req, res) => {
       });
     }
 
+    // Validate package (salary) is required
+    if (!pkg || pkg.trim() === '') {
+      return res.status(400).json({
+        error: 'Package (Salary) is required'
+      });
+    }
+
+    // Validate that all rounds have feedback
+    if (!Array.isArray(rounds) || rounds.length === 0) {
+      return res.status(400).json({
+        error: 'At least one placement round is required'
+      });
+    }
+
+    for (let i = 0; i < rounds.length; i++) {
+      if (!rounds[i].feedback || rounds[i].feedback.trim() === '') {
+        return res.status(400).json({
+          error: `Feedback/Tips for Round ${i + 1} is required`
+        });
+      }
+    }
+
     // If user is authenticated, use their info; otherwise use provided author name
     let authorId = null;
     let authorName = author || 'Anonymous';

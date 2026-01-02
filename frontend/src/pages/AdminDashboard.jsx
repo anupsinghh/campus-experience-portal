@@ -785,7 +785,7 @@ function AdminDashboard() {
                           </div>
                           {exp.rounds && exp.rounds.length > 0 && (
                             <div className="experience-rounds-preview">
-                              <strong>Interview Rounds:</strong>
+                              <strong>Placement Round:</strong>
                               <div className="rounds-preview-list">
                                 {exp.rounds.slice(0, 3).map((round, idx) => (
                                   <div key={idx} className="round-preview-item">
@@ -949,7 +949,7 @@ function AdminDashboard() {
                         </div>
                         {exp.rounds && exp.rounds.length > 0 && (
                           <div className="experience-rounds-preview">
-                            <strong>Interview Rounds ({exp.rounds.length}):</strong>
+                            <strong>Placement Round ({exp.rounds.length}):</strong>
                             <div className="rounds-preview-list">
                               {exp.rounds.map((round, idx) => (
                                 <div key={idx} className="round-preview-item">
@@ -1072,7 +1072,7 @@ function AdminDashboard() {
                             </div>
                             {report.experience.rounds && report.experience.rounds.length > 0 && (
                               <div className="experience-rounds-preview" style={{ marginTop: 'var(--spacing-md)' }}>
-                                <strong>Interview Rounds ({report.experience.rounds.length}):</strong>
+                                <strong>Placement Round ({report.experience.rounds.length}):</strong>
                                 <div className="rounds-preview-list">
                                   {report.experience.rounds.slice(0, 2).map((round, idx) => (
                                     <div key={idx} className="round-preview-item">
@@ -1678,7 +1678,7 @@ function AdminDashboard() {
                     </div>
                   </div>
                   <div className="review-section">
-                    <h4>Interview Rounds</h4>
+                    <h4>Placement Round</h4>
                     {selectedExperience.rounds?.map((round, idx) => (
                       <div key={idx} className="round-item">
                         <h5>Round {round.roundNumber}: {round.roundName}</h5>

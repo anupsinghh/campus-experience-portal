@@ -104,6 +104,23 @@ function CreateExperience() {
     setSuccess(false);
 
     try {
+      // Validate required fields
+      if (!formData.package || formData.package.trim() === '') {
+        setError('Package (Salary) is required');
+        setLoading(false);
+        return;
+      }
+
+      // Validate that all rounds have feedback
+      const roundsWithoutFeedback = formData.rounds.filter(
+        (round) => !round.feedback || round.feedback.trim() === ''
+      );
+      if (roundsWithoutFeedback.length > 0) {
+        setError('Feedback/Tips for each round is required');
+        setLoading(false);
+        return;
+      }
+
       // Clean up empty questions
       const cleanedRounds = formData.rounds.map((round) => ({
         ...round,
@@ -207,13 +224,14 @@ function CreateExperience() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="package">Package (Optional)</label>
+                <label htmlFor="package">Package (Salary) *</label>
                 <input
                   type="text"
                   id="package"
                   name="package"
                   value={formData.package}
                   onChange={handleInputChange}
+                  required
                   placeholder="e.g., 35 LPA"
                 />
               </div>
@@ -247,7 +265,7 @@ function CreateExperience() {
           </div>
 
           <div className="form-section">
-            <h2>Interview Rounds</h2>
+            <h2>Placement Round</h2>
             {formData.rounds.map((round, roundIndex) => (
               <div key={roundIndex} className="round-form">
                 <div className="round-header">
@@ -311,12 +329,13 @@ function CreateExperience() {
                 </div>
 
                 <div className="form-group">
-                  <label>Feedback/Tips for this Round</label>
+                  <label>Feedback/Tips for this Round *</label>
                   <textarea
                     value={round.feedback}
                     onChange={(e) =>
                       handleRoundChange(roundIndex, 'feedback', e.target.value)
                     }
+                    required
                     rows="3"
                     placeholder="Share any tips or feedback specific to this round"
                   />

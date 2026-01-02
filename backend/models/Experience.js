@@ -51,7 +51,7 @@ const experienceSchema = new mongoose.Schema({
       validator: function(v) {
         return v && v.length > 0;
       },
-      message: 'At least one interview round is required',
+      message: 'At least one placement round is required',
     },
   },
   package: {

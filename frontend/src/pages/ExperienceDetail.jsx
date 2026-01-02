@@ -85,7 +85,7 @@ function ExperienceDetail() {
 
         <div className="detail-content">
           <section className="detail-section">
-            <h2>Interview Rounds</h2>
+            <h2>Placement Round</h2>
             <div className="rounds-list">
               {experience.rounds.map((round, index) => (
                 <div key={index} className="round-card">
