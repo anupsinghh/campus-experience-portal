@@ -145,18 +145,6 @@ function Layout({ children }) {
                         )}
                       </Link>
                       <Link 
-                        to="/admin?tab=reports" 
-                        className={`nav-link ${location.pathname === '/admin' && location.search.includes('tab=reports') ? 'active' : ''}`}
-                      >
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '18px', height: '18px', marginRight: '4px' }}>
-                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                          <polyline points="14 2 14 8 20 8" />
-                          <line x1="16" y1="13" x2="8" y2="13" />
-                          <line x1="16" y1="17" x2="8" y2="17" />
-                        </svg>
-                        Reports
-                      </Link>
-                      <Link 
                         to="/admin?tab=announcements" 
                         className={`nav-link ${location.pathname === '/admin' && location.search.includes('tab=announcements') ? 'active' : ''}`}
                       >
@@ -189,6 +177,15 @@ function Layout({ children }) {
                           <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                         </svg>
                         Users
+                      </Link>
+                      <Link 
+                        to="/admin?tab=insights" 
+                        className={`nav-link ${location.pathname === '/admin' && location.search.includes('tab=insights') ? 'active' : ''}`}
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '18px', height: '18px', marginRight: '4px' }}>
+                          <path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z" />
+                        </svg>
+                        Insights
                       </Link>
                     </>
                   ) : (

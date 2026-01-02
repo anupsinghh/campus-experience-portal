@@ -267,23 +267,6 @@ export const adminAPI = {
       withAuth: true,
     }),
 
-  // Reports
-  getReports: (status) => {
-    const params = status ? `?status=${status}` : '';
-    return fetchAPI(`/admin/reports${params}`, { withAuth: true });
-  },
-  reviewReport: (id, status, adminNotes) =>
-    fetchAPI(`/admin/reports/${id}/review`, {
-      method: 'PUT',
-      body: JSON.stringify({ status, adminNotes }),
-      withAuth: true,
-    }),
-  deleteReport: (id) =>
-    fetchAPI(`/admin/reports/${id}`, {
-      method: 'DELETE',
-      withAuth: true,
-    }),
-
   // Company Standardization
   getCompanyStandardizations: () => fetchAPI('/admin/companies', { withAuth: true }),
   getAllCompanies: () => fetchAPI('/admin/companies/all', { withAuth: true }),

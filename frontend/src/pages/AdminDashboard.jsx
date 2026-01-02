@@ -1,8 +1,35 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
-import { adminAPI } from '../services/api.js';
+import { adminAPI, insightsAPI } from '../services/api.js';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from 'chart.js';
+import { Bar, Pie, Line } from 'react-chartjs-2';
 import './AdminDashboard.css';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 function AdminDashboard() {
   const { user } = useAuth();
@@ -24,12 +51,6 @@ function AdminDashboard() {
   const [recentLoading, setRecentLoading] = useState(false);
   const [selectedExperience, setSelectedExperience] = useState(null);
   const [moderationNotes, setModerationNotes] = useState('');
-
-  // Reports states
-  const [reports, setReports] = useState([]);
-  const [reportsLoading, setReportsLoading] = useState(false);
-  const [selectedReport, setSelectedReport] = useState(null);
-  const [reportNotes, setReportNotes] = useState('');
 
   // Announcements states
   const [announcements, setAnnouncements] = useState([]);
@@ -63,6 +84,10 @@ function AdminDashboard() {
   const [userFilters, setUserFilters] = useState({ branch: '', role: '', search: '' });
   const [userFilterOptions, setUserFilterOptions] = useState({ branches: [], years: [], roles: [] });
 
+  // Insights states
+  const [insights, setInsights] = useState(null);
+  const [insightsLoading, setInsightsLoading] = useState(false);
+
   useEffect(() => {
     // Sync activeTab with URL parameter
     const tabFromUrl = searchParams.get('tab') || 'overview';
@@ -88,8 +113,6 @@ function AdminDashboard() {
     // Load data when tab changes
     if (activeTab === 'moderation') {
       loadPendingExperiences();
-    } else if (activeTab === 'reports') {
-      loadReports();
     } else if (activeTab === 'announcements') {
       loadAnnouncements();
     } else if (activeTab === 'companies') {
@@ -98,6 +121,8 @@ function AdminDashboard() {
     } else if (activeTab === 'users') {
       loadUsers();
       loadUserFilters();
+    } else if (activeTab === 'insights') {
+      loadInsights();
     }
   }, [activeTab]);
 
@@ -117,7 +142,7 @@ function AdminDashboard() {
       // Handle both response formats
       if (response.success && response.data) {
         setStats(response.data);
-      } else if (response.experiences || response.reports || response.announcements) {
+      } else if (response.experiences || response.announcements) {
         // Direct data format
         setStats(response);
       } else {
@@ -232,28 +257,6 @@ function AdminDashboard() {
     }
   };
 
-  const loadReports = async () => {
-    try {
-      setReportsLoading(true);
-      const response = await adminAPI.getReports();
-      // Handle both response formats
-      if (response.success && response.data) {
-        setReports(Array.isArray(response.data) ? response.data : []);
-      } else if (Array.isArray(response)) {
-        setReports(response);
-      } else if (response.data && Array.isArray(response.data)) {
-        setReports(response.data);
-      } else {
-        setReports([]);
-      }
-    } catch (error) {
-      console.error('Error loading reports:', error);
-      setReports([]);
-    } finally {
-      setReportsLoading(false);
-    }
-  };
-
   const loadAnnouncements = async () => {
     try {
       setAnnouncementsLoading(true);
@@ -356,20 +359,6 @@ function AdminDashboard() {
     } catch (error) {
       console.error('Error deleting experience:', error);
       alert('Failed to delete experience: ' + (error.message || 'Unknown error'));
-    }
-  };
-
-  const handleReviewReport = async (id, status) => {
-    try {
-      await adminAPI.reviewReport(id, status, reportNotes);
-      setReportNotes('');
-      setSelectedReport(null);
-      await loadReports();
-      await loadStats();
-      alert('Report reviewed successfully');
-    } catch (error) {
-      console.error('Error reviewing report:', error);
-      alert('Failed to review report: ' + (error.message || 'Unknown error'));
     }
   };
 
@@ -513,6 +502,19 @@ function AdminDashboard() {
     }
   };
 
+  const loadInsights = async () => {
+    try {
+      setInsightsLoading(true);
+      const data = await insightsAPI.getAll();
+      setInsights(data);
+    } catch (error) {
+      console.error('Error loading insights:', error);
+      setInsights(null);
+    } finally {
+      setInsightsLoading(false);
+    }
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-IN', {
@@ -522,6 +524,14 @@ function AdminDashboard() {
       hour: '2-digit',
       minute: '2-digit',
     });
+  };
+
+  // Helper function to format currency values
+  const formatCurrency = (value) => {
+    if (typeof value === 'string') {
+      return value.replace(/\$/g, '').replace(/USD/gi, '').trim();
+    }
+    return value;
   };
 
   if (loading) {
@@ -685,24 +695,6 @@ function AdminDashboard() {
                     <div className="stat-label">Total Experiences</div>
                     <button className="stat-action" onClick={(e) => { e.stopPropagation(); handleViewAllExperiences(); }}>
                       View All →
-                    </button>
-                  </div>
-                </div>
-
-                <div className="stat-card stat-card-danger">
-                  <div className="stat-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                      <line x1="16" y1="13" x2="8" y2="13" />
-                      <line x1="16" y1="17" x2="8" y2="17" />
-                    </svg>
-                  </div>
-                  <div className="stat-content">
-                    <div className="stat-value">{stats?.reports?.pending || 0}</div>
-                    <div className="stat-label">Pending Reports</div>
-                    <button className="stat-action" onClick={() => handleTabChange('reports')}>
-                      Review Now →
                     </button>
                   </div>
                 </div>
@@ -992,179 +984,6 @@ function AdminDashboard() {
                   </div>
                 );
               })()}
-            </div>
-          )}
-
-          {activeTab === 'reports' && (
-            <div className="reports-section">
-              <div className="section-header">
-                <h2>Content Reports</h2>
-                <button className="btn-primary" onClick={loadReports}>Refresh</button>
-              </div>
-              {reportsLoading ? (
-                <div className="loading-state">
-                  <div className="loading-spinner"></div>
-                  <p>Loading reports...</p>
-                </div>
-              ) : reports.length === 0 ? (
-                <div className="empty-state">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                  </svg>
-                  <h3>No reports</h3>
-                  <p>All clear! No content reports to review.</p>
-                </div>
-              ) : (
-                <div className="reports-list">
-                  {reports.map((report) => (
-                    <div key={report._id} className="report-item detailed">
-                      <div className="report-main">
-                        <div className="report-header">
-                          <h3>Report #{report._id.slice(-6).toUpperCase()}</h3>
-                          <span className={`status-badge ${report.status}`}>{report.status}</span>
-                        </div>
-                        <div className="report-details-grid">
-                          <div className="detail-item">
-                            <strong>Experience:</strong> {report.experience?.company} - {report.experience?.role}
-                          </div>
-                          <div className="detail-item">
-                            <strong>Reason:</strong> <span className="reason-badge">{report.reason.replace('_', ' ')}</span>
-                          </div>
-                          <div className="detail-item">
-                            <strong>Reported:</strong> {formatDate(report.createdAt)}
-                          </div>
-                          {report.reportedBy && (
-                            <div className="detail-item">
-                              <strong>Reported By:</strong> {report.reportedBy.name || report.reportedBy.username || 'Anonymous'}
-                              {report.reportedBy.username && <span style={{ color: '#64748b', marginLeft: '8px' }}>@{report.reportedBy.username}</span>}
-                            </div>
-                          )}
-                        </div>
-                        {report.description && (
-                          <div className="report-description-box">
-                            <strong>Description:</strong>
-                            <p>{report.description}</p>
-                          </div>
-                        )}
-                        {report.experience && (
-                          <div className="reported-experience-details">
-                            <strong>Reported Experience Details:</strong>
-                            <div className="experience-details-grid" style={{ marginTop: 'var(--spacing-sm)' }}>
-                              <div className="detail-item">
-                                <strong>Author:</strong> {report.experience.authorName || 'Anonymous'}
-                              </div>
-                              <div className="detail-item">
-                                <strong>Branch:</strong> {report.experience.branch || 'N/A'}
-                              </div>
-                              <div className="detail-item">
-                                <strong>Year:</strong> {report.experience.year || 'N/A'}
-                              </div>
-                              <div className="detail-item">
-                                <strong>Package:</strong> {report.experience.package || 'N/A'}
-                              </div>
-                              <div className="detail-item">
-                                <strong>Status:</strong> <span className={`status-badge ${report.experience.offerStatus?.toLowerCase()}`}>{report.experience.offerStatus}</span>
-                              </div>
-                              <div className="detail-item">
-                                <strong>Created:</strong> {formatDate(report.experience.createdAt)}
-                              </div>
-                            </div>
-                            {report.experience.rounds && report.experience.rounds.length > 0 && (
-                              <div className="experience-rounds-preview" style={{ marginTop: 'var(--spacing-md)' }}>
-                                <strong>Placement Round ({report.experience.rounds.length}):</strong>
-                                <div className="rounds-preview-list">
-                                  {report.experience.rounds.slice(0, 2).map((round, idx) => (
-                                    <div key={idx} className="round-preview-item">
-                                      <span className="round-number">Round {round.roundNumber}</span>
-                                      <span className="round-name">{round.roundName}</span>
-                                      {round.questions && round.questions.length > 0 && (
-                                        <span className="round-questions-count">{round.questions.length} questions</span>
-                                      )}
-                                    </div>
-                                  ))}
-                                  {report.experience.rounds.length > 2 && (
-                                    <span className="more-rounds">+{report.experience.rounds.length - 2} more rounds</span>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-                            {report.experience.tips && (
-                              <div className="experience-tips-preview" style={{ marginTop: 'var(--spacing-md)' }}>
-                                <strong>Tips:</strong>
-                                <p>{report.experience.tips.length > 200 ? `${report.experience.tips.substring(0, 200)}...` : report.experience.tips}</p>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      <div className="report-actions">
-                        <button
-                          className="btn-primary"
-                          onClick={() => {
-                            setSelectedReport(report);
-                            setReportNotes('');
-                          }}
-                        >
-                          Review
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {selectedReport && (
-                <div className="modal-overlay" onClick={() => setSelectedReport(null)}>
-                  <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                    <div className="modal-header">
-                      <h2>Review Report</h2>
-                      <button className="modal-close" onClick={() => setSelectedReport(null)}>×</button>
-                    </div>
-                    <div className="report-review">
-                      <div className="review-section">
-                        <h4>Report Details</h4>
-                        <div className="review-grid">
-                          <div><strong>Experience:</strong> {selectedReport.experience?.company} - {selectedReport.experience?.role}</div>
-                          <div><strong>Reason:</strong> <span className="reason-badge">{selectedReport.reason.replace('_', ' ')}</span></div>
-                          <div><strong>Status:</strong> <span className={`status-badge ${selectedReport.status}`}>{selectedReport.status}</span></div>
-                          <div><strong>Reported:</strong> {formatDate(selectedReport.createdAt)}</div>
-                        </div>
-                        <div className="review-description">
-                          <strong>Description:</strong>
-                          <p>{selectedReport.description || 'No description provided'}</p>
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <label>Admin Notes (optional)</label>
-                        <textarea
-                          placeholder="Add notes about this report review..."
-                          value={reportNotes}
-                          onChange={(e) => setReportNotes(e.target.value)}
-                          rows="3"
-                        />
-                      </div>
-                      <div className="modal-actions">
-                        <button
-                          className="btn-approve"
-                          onClick={() => handleReviewReport(selectedReport._id, 'resolved')}
-                        >
-                          ✓ Mark Resolved
-                        </button>
-                        <button
-                          className="btn-reject"
-                          onClick={() => handleReviewReport(selectedReport._id, 'dismissed')}
-                        >
-                          ✗ Dismiss
-                        </button>
-                        <button className="btn-secondary" onClick={() => setSelectedReport(null)}>
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
@@ -1653,6 +1472,310 @@ function AdminDashboard() {
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {activeTab === 'insights' && (
+            <div className="insights-section">
+              <div className="section-header">
+                <h2>Data Insights & Analytics</h2>
+                <button className="btn-primary" onClick={loadInsights}>Refresh</button>
+              </div>
+              {insightsLoading ? (
+                <div className="loading-state">
+                  <div className="loading-spinner"></div>
+                  <p>Loading insights...</p>
+                </div>
+              ) : !insights ? (
+                <div className="empty-state">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z" />
+                  </svg>
+                  <h3>No insights available</h3>
+                  <p>Failed to load insights data.</p>
+                </div>
+              ) : (() => {
+                // Prepare chart data
+                const companyData = Object.entries(insights.companyDistribution || {})
+                  .sort((a, b) => b[1] - a[1])
+                  .slice(0, 10);
+
+                const roleData = Object.entries(insights.roleDistribution || {})
+                  .sort((a, b) => b[1] - a[1])
+                  .slice(0, 8);
+
+                const yearData = Object.entries(insights.yearDistribution || {})
+                  .sort((a, b) => a[0] - b[0]);
+
+                // Company Bar Chart
+                const companyChartData = {
+                  labels: companyData.map(([company]) => company),
+                  datasets: [
+                    {
+                      label: 'Experiences',
+                      data: companyData.map(([, count]) => count),
+                      backgroundColor: 'rgba(168, 85, 247, 0.8)',
+                      borderColor: 'rgba(168, 85, 247, 1)',
+                      borderWidth: 2,
+                      borderRadius: 8,
+                      borderSkipped: false,
+                    },
+                  ],
+                };
+
+                // Role Pie Chart
+                const roleChartData = {
+                  labels: roleData.map(([role]) => role),
+                  datasets: [
+                    {
+                      label: 'Roles',
+                      data: roleData.map(([, count]) => count),
+                      backgroundColor: [
+                        'rgba(168, 85, 247, 0.8)',
+                        'rgba(244, 114, 182, 0.8)',
+                        'rgba(251, 191, 36, 0.8)',
+                        'rgba(34, 197, 94, 0.8)',
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(236, 72, 153, 0.8)',
+                        'rgba(192, 132, 252, 0.8)',
+                      ],
+                      borderColor: '#ffffff',
+                      borderWidth: 2,
+                    },
+                  ],
+                };
+
+                // Year Line Chart
+                const yearChartData = {
+                  labels: yearData.map(([year]) => year.toString()),
+                  datasets: [
+                    {
+                      label: 'Experiences per Year',
+                      data: yearData.map(([, count]) => count),
+                      borderColor: 'rgba(168, 85, 247, 1)',
+                      backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                      borderWidth: 3,
+                      fill: true,
+                      tension: 0.4,
+                      pointRadius: 5,
+                      pointHoverRadius: 7,
+                      pointBackgroundColor: 'rgba(168, 85, 247, 1)',
+                      pointBorderColor: '#ffffff',
+                      pointBorderWidth: 2,
+                    },
+                  ],
+                };
+
+                const chartOptions = {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      display: true,
+                      position: 'top',
+                      labels: {
+                        font: {
+                          size: 12,
+                          weight: '600',
+                        },
+                        padding: 15,
+                        usePointStyle: true,
+                      },
+                    },
+                    tooltip: {
+                      backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                      padding: 12,
+                      titleFont: {
+                        size: 14,
+                        weight: '600',
+                      },
+                      bodyFont: {
+                        size: 13,
+                      },
+                      borderColor: 'rgba(168, 85, 247, 0.5)',
+                      borderWidth: 1,
+                      cornerRadius: 8,
+                    },
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      grid: {
+                        color: 'rgba(148, 163, 184, 0.1)',
+                      },
+                    },
+                    x: {
+                      grid: {
+                        display: false,
+                      },
+                    },
+                  },
+                };
+
+                const pieChartOptions = {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      display: true,
+                      position: 'right',
+                      labels: {
+                        font: {
+                          size: 11,
+                          weight: '500',
+                        },
+                        padding: 12,
+                        usePointStyle: true,
+                      },
+                    },
+                    tooltip: {
+                      backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                      padding: 12,
+                      titleFont: {
+                        size: 14,
+                        weight: '600',
+                      },
+                      bodyFont: {
+                        size: 13,
+                      },
+                      borderColor: 'rgba(168, 85, 247, 0.5)',
+                      borderWidth: 1,
+                      cornerRadius: 8,
+                    },
+                  },
+                };
+
+                return (
+                  <>
+                    {/* Stats Overview Cards */}
+                    <div className="stats-overview" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--spacing-md)', marginBottom: 'var(--spacing-xl)' }}>
+                      <div className="stat-card stat-card-primary">
+                        <div className="stat-icon">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M9 11l3 3L22 4" />
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                          </svg>
+                        </div>
+                        <div className="stat-content">
+                          <div className="stat-value">{insights.overview?.totalExperiences || 0}</div>
+                          <div className="stat-label">Total Experiences</div>
+                        </div>
+                      </div>
+
+                      <div className="stat-card stat-card-success">
+                        <div className="stat-icon">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                          </svg>
+                        </div>
+                        <div className="stat-content">
+                          <div className="stat-value">{insights.overview?.uniqueCompanies || 0}</div>
+                          <div className="stat-label">Unique Companies</div>
+                        </div>
+                      </div>
+
+                      <div className="stat-card stat-card-info">
+                        <div className="stat-icon">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                          </svg>
+                        </div>
+                        <div className="stat-content">
+                          <div className="stat-value">{insights.overview?.uniqueRoles || 0}</div>
+                          <div className="stat-label">Unique Roles</div>
+                        </div>
+                      </div>
+
+                      <div className="stat-card stat-card-warning">
+                        <div className="stat-icon">
+                          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                            <text x="12" y="18" fontSize="18" fontWeight="bold" textAnchor="middle" fontFamily="Arial, sans-serif">₹</text>
+                          </svg>
+                        </div>
+                        <div className="stat-content">
+                          <div className="stat-value">₹{formatCurrency(insights.overview?.avgPackage || 0)} LPA</div>
+                          <div className="stat-label">Average Package</div>
+                        </div>
+                      </div>
+
+                      <div className="stat-card stat-card-danger">
+                        <div className="stat-icon">
+                          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                            <text x="12" y="18" fontSize="18" fontWeight="bold" textAnchor="middle" fontFamily="Arial, sans-serif">₹</text>
+                          </svg>
+                        </div>
+                        <div className="stat-content">
+                          <div className="stat-value">₹{formatCurrency(insights.overview?.maxPackage || 0)} LPA</div>
+                          <div className="stat-label">Maximum Package</div>
+                        </div>
+                      </div>
+
+                      <div className="stat-card stat-card-secondary">
+                        <div className="stat-icon">
+                          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                            <text x="12" y="18" fontSize="18" fontWeight="bold" textAnchor="middle" fontFamily="Arial, sans-serif">₹</text>
+                          </svg>
+                        </div>
+                        <div className="stat-content">
+                          <div className="stat-value">₹{formatCurrency(insights.overview?.minPackage || 0)} LPA</div>
+                          <div className="stat-label">Minimum Package</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Charts Grid */}
+                    <div className="charts-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 'var(--spacing-lg)', marginBottom: 'var(--spacing-xl)' }}>
+                      <div className="chart-card" style={{ background: '#fff', borderRadius: '12px', padding: 'var(--spacing-lg)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+                        <div className="chart-header" style={{ marginBottom: 'var(--spacing-md)' }}>
+                          <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '600' }}>Top Companies</h3>
+                          <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '0.875rem' }}>Experiences by company</p>
+                        </div>
+                        <div className="chart-container" style={{ height: '300px' }}>
+                          {companyData.length > 0 ? (
+                            <Bar data={companyChartData} options={chartOptions} />
+                          ) : (
+                            <p style={{ textAlign: 'center', color: '#64748b' }}>No data available</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="chart-card" style={{ background: '#fff', borderRadius: '12px', padding: 'var(--spacing-lg)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+                        <div className="chart-header" style={{ marginBottom: 'var(--spacing-md)' }}>
+                          <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '600' }}>Role Distribution</h3>
+                          <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '0.875rem' }}>Most common job roles</p>
+                        </div>
+                        <div className="chart-container" style={{ height: '300px' }}>
+                          {roleData.length > 0 ? (
+                            <Pie data={roleChartData} options={pieChartOptions} />
+                          ) : (
+                            <p style={{ textAlign: 'center', color: '#64748b' }}>No data available</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Year Trend Chart */}
+                    {yearData.length > 0 && (
+                      <div className="chart-card" style={{ background: '#fff', borderRadius: '12px', padding: 'var(--spacing-lg)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', marginBottom: 'var(--spacing-xl)' }}>
+                        <div className="chart-header" style={{ marginBottom: 'var(--spacing-md)' }}>
+                          <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '600' }}>Yearly Trends</h3>
+                          <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '0.875rem' }}>Experiences over time</p>
+                        </div>
+                        <div className="chart-container" style={{ height: '300px' }}>
+                          <Line data={yearChartData} options={chartOptions} />
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           )}
 
