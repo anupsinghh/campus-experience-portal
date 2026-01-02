@@ -246,28 +246,6 @@ export const adminAPI = {
     return fetchAPI(`/admin/users${queryString ? `?${queryString}` : ''}`, { withAuth: true });
   },
   getUserFilters: () => fetchAPI('/admin/users/filters', { withAuth: true }),
-};
-
-// Public Announcements API
-export const announcementsAPI = {
-  getAnnouncements: () => fetchAPI('/announcements', { withAuth: false }),
-
-  // Reports
-  getReports: (status) => {
-    const params = status ? `?status=${status}` : '';
-    return fetchAPI(`/admin/reports${params}`, { withAuth: true });
-  },
-  reviewReport: (id, status, adminNotes) =>
-    fetchAPI(`/admin/reports/${id}/review`, {
-      method: 'PUT',
-      body: JSON.stringify({ status, adminNotes }),
-      withAuth: true,
-    }),
-  deleteReport: (id) =>
-    fetchAPI(`/admin/reports/${id}`, {
-      method: 'DELETE',
-      withAuth: true,
-    }),
 
   // Announcements
   getAnnouncements: () => fetchAPI('/admin/announcements', { withAuth: true }),
@@ -285,6 +263,23 @@ export const announcementsAPI = {
     }),
   deleteAnnouncement: (id) =>
     fetchAPI(`/admin/announcements/${id}`, {
+      method: 'DELETE',
+      withAuth: true,
+    }),
+
+  // Reports
+  getReports: (status) => {
+    const params = status ? `?status=${status}` : '';
+    return fetchAPI(`/admin/reports${params}`, { withAuth: true });
+  },
+  reviewReport: (id, status, adminNotes) =>
+    fetchAPI(`/admin/reports/${id}/review`, {
+      method: 'PUT',
+      body: JSON.stringify({ status, adminNotes }),
+      withAuth: true,
+    }),
+  deleteReport: (id) =>
+    fetchAPI(`/admin/reports/${id}`, {
       method: 'DELETE',
       withAuth: true,
     }),
@@ -315,4 +310,9 @@ export const announcementsAPI = {
       method: 'DELETE',
       withAuth: true,
     }),
+};
+
+// Public Announcements API (for non-admin users)
+export const announcementsAPI = {
+  getAnnouncements: () => fetchAPI('/announcements', { withAuth: false }),
 };

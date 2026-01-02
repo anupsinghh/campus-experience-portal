@@ -42,15 +42,24 @@ function Layout({ children }) {
     }
   }, [isAuthenticated, user]);
 
-  // Fetch announcements for students
+  // Fetch announcements for all users (students, alumni, etc.)
   useEffect(() => {
-    if (isAuthenticated && user?.role !== 'admin') {
+    if (isAuthenticated) {
       const fetchAnnouncements = async () => {
         try {
           const response = await announcementsAPI.getAnnouncements();
-          if (response.success && response.data) {
-            setAnnouncements(response.data || []);
-            setAnnouncementsCount(response.data?.length || 0);
+          console.log('Announcements response:', response);
+          if (response && response.success && response.data) {
+            const announcementsData = Array.isArray(response.data) ? response.data : [];
+            setAnnouncements(announcementsData);
+            setAnnouncementsCount(announcementsData.length);
+          } else if (Array.isArray(response)) {
+            // Handle case where response is directly an array
+            setAnnouncements(response);
+            setAnnouncementsCount(response.length);
+          } else if (response && response.data && Array.isArray(response.data)) {
+            setAnnouncements(response.data);
+            setAnnouncementsCount(response.data.length);
           }
         } catch (error) {
           console.error('Error fetching announcements:', error);
@@ -61,7 +70,7 @@ function Layout({ children }) {
       const interval = setInterval(fetchAnnouncements, 60000);
       return () => clearInterval(interval);
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated]);
 
   // Close announcements dropdown when clicking outside
   useEffect(() => {

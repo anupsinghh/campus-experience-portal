@@ -532,6 +532,7 @@ router.post('/announcements', async (req, res) => {
       content: content.trim(),
       type: type || 'general',
       priority: priority || 'medium',
+      isActive: true, // Ensure announcements are active by default
       publishedBy: req.user._id,
       expiresAt: expiresAt ? new Date(expiresAt) : null,
     });
