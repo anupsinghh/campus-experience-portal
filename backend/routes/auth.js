@@ -105,10 +105,15 @@ router.post('/register', async (req, res) => {
 // @access  Public
 router.post('/login', async (req, res) => {
   try {
+    // Debug: Log the request body
+    console.log('Login request body:', req.body);
+    console.log('Request headers:', req.headers);
+    
     const { identifier, password } = req.body;
 
     // Validation
     if (!identifier || !password) {
+      console.log('Validation failed - identifier:', identifier, 'password:', password ? '***' : 'missing');
       return res.status(400).json({
         success: false,
         error: 'Please provide email/username and password',

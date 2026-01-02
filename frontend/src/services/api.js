@@ -20,10 +20,10 @@ const API_BASE_URL = resolvedBase.replace(/\/$/, '') + '/api';
 // Helper function for API calls
 const fetchAPI = async (endpoint, options = {}) => {
   try {
-    const { withAuth, ...restOptions } = options;
+    const { withAuth, body, method, headers: customHeaders, ...restOptions } = options;
     const headers = {
       'Content-Type': 'application/json',
-      ...restOptions.headers,
+      ...customHeaders,
     };
 
     // Attach Authorization header when requested and running in the browser
@@ -34,10 +34,18 @@ const fetchAPI = async (endpoint, options = {}) => {
       }
     }
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const fetchOptions = {
+      method: method || 'GET',
       headers,
       ...restOptions,
-    });
+    };
+
+    // Only include body if it exists and method is not GET
+    if (body && method !== 'GET') {
+      fetchOptions.body = body;
+    }
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, fetchOptions);
 
     const data = await response.json().catch(() => null);
 
