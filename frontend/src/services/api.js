@@ -40,8 +40,8 @@ const fetchAPI = async (endpoint, options = {}) => {
       ...restOptions,
     };
 
-    // Only include body if it exists and method is not GET
-    if (body && method !== 'GET') {
+    // Include body for POST, PUT, PATCH, DELETE requests
+    if (body && method && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method.toUpperCase())) {
       fetchOptions.body = body;
     }
 
@@ -65,11 +65,16 @@ const fetchAPI = async (endpoint, options = {}) => {
 
 // Auth API
 export const authAPI = {
-  login: (identifier, password) =>
-    fetchAPI('/auth/login', {
+  login: (identifier, password) => {
+    // Ensure values are not empty
+    if (!identifier || !password) {
+      return Promise.reject(new Error('Please provide email/username and password'));
+    }
+    return fetchAPI('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ identifier, password }),
-    }),
+    });
+  },
 
   register: (payload) =>
     fetchAPI('/auth/register', {

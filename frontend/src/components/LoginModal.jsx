@@ -17,8 +17,18 @@ function LoginModal({ onClose, initialEmail = '' }) {
     setLoading(true);
     setError('');
 
+    // Trim and validate inputs
+    const trimmedIdentifier = identifier?.trim();
+    const trimmedPassword = password?.trim();
+
+    if (!trimmedIdentifier || !trimmedPassword) {
+      setError('Please provide email/username and password');
+      setLoading(false);
+      return;
+    }
+
     try {
-      await login(identifier, password);
+      await login(trimmedIdentifier, trimmedPassword);
       onClose?.();
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');

@@ -108,12 +108,25 @@ router.post('/login', async (req, res) => {
     // Debug: Log the request body
     console.log('Login request body:', req.body);
     console.log('Request headers:', req.headers);
+    console.log('Content-Type:', req.headers['content-type']);
+    
+    // Check if body is empty or not parsed
+    if (!req.body || Object.keys(req.body).length === 0) {
+      console.log('Request body is empty or not parsed');
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide email/username and password',
+      });
+    }
     
     const { identifier, password } = req.body;
 
-    // Validation
-    if (!identifier || !password) {
-      console.log('Validation failed - identifier:', identifier, 'password:', password ? '***' : 'missing');
+    // Validation - check for empty strings as well
+    const trimmedIdentifier = typeof identifier === 'string' ? identifier.trim() : identifier;
+    const trimmedPassword = typeof password === 'string' ? password.trim() : password;
+    
+    if (!trimmedIdentifier || !trimmedPassword || trimmedIdentifier === '' || trimmedPassword === '') {
+      console.log('Validation failed - identifier:', trimmedIdentifier, 'password:', trimmedPassword ? '***' : 'missing');
       return res.status(400).json({
         success: false,
         error: 'Please provide email/username and password',
@@ -125,8 +138,8 @@ router.post('/login', async (req, res) => {
     const ADMIN_USERNAME = 'admin';
     const ADMIN_PASSWORD = 'admin123'; // Hardcoded for now
 
-    if ((identifier.toLowerCase() === ADMIN_EMAIL || identifier.toLowerCase() === ADMIN_USERNAME) && 
-        password === ADMIN_PASSWORD) {
+    if ((trimmedIdentifier.toLowerCase() === ADMIN_EMAIL || trimmedIdentifier.toLowerCase() === ADMIN_USERNAME) && 
+        trimmedPassword === ADMIN_PASSWORD) {
       // Check if admin user exists, if not create it
       let adminUser = await User.findOne({ 
         $or: [
@@ -170,8 +183,8 @@ router.post('/login', async (req, res) => {
     // Check for user by email or username and include password for comparison
     const user = await User.findOne({
       $or: [
-        { email: identifier.toLowerCase() },
-        { username: identifier.toLowerCase() }
+        { email: trimmedIdentifier.toLowerCase() },
+        { username: trimmedIdentifier.toLowerCase() }
       ]
     }).select('+password');
 
@@ -183,7 +196,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Check if password matches
-    const isMatch = await user.matchPassword(password);
+    const isMatch = await user.matchPassword(trimmedPassword);
 
     if (!isMatch) {
       return res.status(401).json({

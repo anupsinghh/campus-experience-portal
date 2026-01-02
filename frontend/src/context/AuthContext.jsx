@@ -55,8 +55,13 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  const login = async (email, password) => {
-    const data = await authAPI.login(email, password);
+  const login = async (identifier, password) => {
+    // Validate inputs before making API call
+    if (!identifier || !password) {
+      throw new Error('Please provide email/username and password');
+    }
+
+    const data = await authAPI.login(identifier, password);
 
     if (!data || data.success === false || !data.token) {
       throw new Error(data?.error || 'Invalid credentials');
