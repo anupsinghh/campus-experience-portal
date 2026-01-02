@@ -1364,6 +1364,10 @@
   font-size: 0.95rem;
   transition: all 0.2s;
   background: white;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
 }
 
 .filter-select:focus,

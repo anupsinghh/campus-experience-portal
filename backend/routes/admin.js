@@ -697,23 +697,41 @@ router.post('/experiences/reset-moderation', async (req, res) => {
 // GET /api/admin/users - Get all users with optional filters
 router.get('/users', async (req, res) => {
   try {
-    const { branch, graduationYear, role, search } = req.query;
-    const query = {};
+    const { branch, role, search } = req.query;
+    
+    let userIds = null;
 
-    // Build query filters
-    if (branch) {
-      query.branch = { $regex: branch, $options: 'i' };
+    // If branch or role filters are provided, find users who have shared experiences with those criteria
+    if (branch || role) {
+      const experienceQuery = {};
+      if (branch) {
+        experienceQuery.branch = { $regex: branch, $options: 'i' };
+      }
+      if (role) {
+        experienceQuery.role = { $regex: role, $options: 'i' };
+      }
+
+      // Find experiences matching the criteria and get unique author IDs
+      const experiences = await Experience.find(experienceQuery).select('author');
+      userIds = [...new Set(experiences.map(exp => exp.author).filter(Boolean))];
+      
+      // If no users found with matching experiences, return empty result
+      if (userIds.length === 0) {
+        return res.json({
+          success: true,
+          count: 0,
+          data: [],
+        });
+      }
     }
 
-    if (graduationYear) {
-      query.graduationYear = parseInt(graduationYear);
+    // Build user query
+    const userQuery = {};
+    if (userIds && userIds.length > 0) {
+      userQuery._id = { $in: userIds };
     }
 
-    if (role) {
-      query.role = role;
-    }
-
-    let users = await User.find(query)
+    let users = await User.find(userQuery)
       .select('-password')
       .sort({ createdAt: -1 });
 
@@ -741,20 +759,20 @@ router.get('/users', async (req, res) => {
   }
 });
 
-// GET /api/admin/users/filters - Get unique filter options
+// GET /api/admin/users/filters - Get unique filter options from experiences
 router.get('/users/filters', async (req, res) => {
   try {
-    const [branches, years, roles] = await Promise.all([
-      User.distinct('branch').then(branches => branches.filter(Boolean).sort()),
-      User.distinct('graduationYear').then(years => years.filter(Boolean).sort((a, b) => b - a)),
-      User.distinct('role').then(roles => roles.filter(Boolean).sort()),
+    // Get branches and roles from experiences that users have shared
+    const [branches, roles] = await Promise.all([
+      Experience.distinct('branch').then(branches => branches.filter(Boolean).sort()),
+      Experience.distinct('role').then(roles => roles.filter(Boolean).sort()),
     ]);
 
     res.json({
       success: true,
       data: {
         branches,
-        years,
+        years: [], // No longer needed, but keeping for backward compatibility
         roles,
       },
     });

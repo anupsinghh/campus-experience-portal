@@ -58,7 +58,8 @@ function AdminDashboard() {
   // Users states
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(false);
-  const [userFilters, setUserFilters] = useState({ branch: '', graduationYear: '', role: '', search: '' });
+  const [userFiltersLoading, setUserFiltersLoading] = useState(false);
+  const [userFilters, setUserFilters] = useState({ branch: '', role: '', search: '' });
   const [userFilterOptions, setUserFilterOptions] = useState({ branches: [], years: [], roles: [] });
 
   useEffect(() => {
@@ -469,16 +470,38 @@ function AdminDashboard() {
 
   const loadUserFilters = async () => {
     try {
+      setUserFiltersLoading(true);
+      console.log('Loading user filters...');
       const response = await adminAPI.getUserFilters();
-      if (response.success && response.data) {
-        setUserFilterOptions({
-          branches: response.data.branches || [],
-          years: response.data.years || [],
-          roles: response.data.roles || [],
-        });
+      console.log('User filters API response:', response);
+      
+      if (response && response.success && response.data) {
+        const filterData = {
+          branches: Array.isArray(response.data.branches) ? response.data.branches : [],
+          years: Array.isArray(response.data.years) ? response.data.years : [],
+          roles: Array.isArray(response.data.roles) ? response.data.roles : [],
+        };
+        console.log('Setting filter options:', filterData);
+        setUserFilterOptions(filterData);
+      } else if (response && response.data) {
+        // Handle case where response.data is directly the filter object
+        const filterData = {
+          branches: Array.isArray(response.data.branches) ? response.data.branches : [],
+          years: Array.isArray(response.data.years) ? response.data.years : [],
+          roles: Array.isArray(response.data.roles) ? response.data.roles : [],
+        };
+        console.log('Setting filter options (direct data):', filterData);
+        setUserFilterOptions(filterData);
+      } else {
+        console.warn('Unexpected filter response format:', response);
+        setUserFilterOptions({ branches: [], years: [], roles: [] });
       }
     } catch (error) {
       console.error('Error loading user filters:', error);
+      alert('Failed to load filter options: ' + (error.message || 'Unknown error'));
+      setUserFilterOptions({ branches: [], years: [], roles: [] });
+    } finally {
+      setUserFiltersLoading(false);
     }
   };
 
@@ -1452,6 +1475,11 @@ function AdminDashboard() {
 
               {/* Filters */}
               <div className="filters-section" style={{ marginBottom: 'var(--spacing-xl)' }}>
+                {userFiltersLoading && (
+                  <div style={{ marginBottom: 'var(--spacing-md)', color: '#666', fontSize: '0.9rem' }}>
+                    Loading filter options...
+                  </div>
+                )}
                 <div className="filters-grid">
                   <div className="filter-group">
                     <label>Department (Branch)</label>
@@ -1461,31 +1489,18 @@ function AdminDashboard() {
                         setUserFilters({ ...userFilters, branch: e.target.value });
                       }}
                       className="filter-select"
+                      disabled={userFiltersLoading}
                     >
                       <option value="">All Departments</option>
-                      {userFilterOptions.branches.map((branch) => (
-                        <option key={branch} value={branch}>
-                          {branch}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="filter-group">
-                    <label>Graduation Year</label>
-                    <select
-                      value={userFilters.graduationYear}
-                      onChange={(e) => {
-                        setUserFilters({ ...userFilters, graduationYear: e.target.value });
-                      }}
-                      className="filter-select"
-                    >
-                      <option value="">All Years</option>
-                      {userFilterOptions.years.map((year) => (
-                        <option key={year} value={year}>
-                          {year}
-                        </option>
-                      ))}
+                      {userFilterOptions.branches && userFilterOptions.branches.length > 0 ? (
+                        userFilterOptions.branches.map((branch) => (
+                          <option key={branch} value={branch}>
+                            {branch}
+                          </option>
+                        ))
+                      ) : (
+                        !userFiltersLoading && <option value="" disabled>No departments found</option>
+                      )}
                     </select>
                   </div>
 

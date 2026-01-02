@@ -240,7 +240,6 @@ export const adminAPI = {
   getUsers: (filters) => {
     const params = new URLSearchParams();
     if (filters?.branch) params.append('branch', filters.branch);
-    if (filters?.graduationYear) params.append('graduationYear', filters.graduationYear);
     if (filters?.role) params.append('role', filters.role);
     if (filters?.search) params.append('search', filters.search);
     const queryString = params.toString();
