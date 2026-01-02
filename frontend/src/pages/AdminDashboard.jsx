@@ -19,6 +19,7 @@ function AdminDashboard() {
   const [allExperiences, setAllExperiences] = useState([]);
   const [showAllExperiences, setShowAllExperiences] = useState(false);
   const [allExperiencesLoading, setAllExperiencesLoading] = useState(false);
+  const [moderationView, setModerationView] = useState('pending'); // 'pending', 'approved', 'rejected'
   const [recentExperiences, setRecentExperiences] = useState([]);
   const [recentLoading, setRecentLoading] = useState(false);
   const [selectedExperience, setSelectedExperience] = useState(null);
@@ -154,23 +155,30 @@ function AdminDashboard() {
 
   const loadAllExperiences = async (status) => {
     try {
-      setPendingLoading(true);
+      setAllExperiencesLoading(true);
+      console.log('Loading experiences with status:', status);
       const response = await adminAPI.getAllExperiences(status);
+      console.log('Experiences response:', response);
       // Handle both response formats
       if (response.success && response.data) {
-        setAllExperiences(Array.isArray(response.data) ? response.data : []);
+        const experiences = Array.isArray(response.data) ? response.data : [];
+        console.log('Setting allExperiences:', experiences.length);
+        setAllExperiences(experiences);
       } else if (Array.isArray(response)) {
+        console.log('Setting allExperiences from array:', response.length);
         setAllExperiences(response);
       } else if (response.data && Array.isArray(response.data)) {
+        console.log('Setting allExperiences from response.data:', response.data.length);
         setAllExperiences(response.data);
       } else {
+        console.warn('Unexpected response format:', response);
         setAllExperiences([]);
       }
     } catch (error) {
       console.error('Error loading experiences:', error);
       setAllExperiences([]);
     } finally {
-      setPendingLoading(false);
+      setAllExperiencesLoading(false);
     }
   };
 
@@ -844,34 +852,75 @@ function AdminDashboard() {
                   </p>
                 </div>
                 <div className="section-actions">
-                  <button className="btn-secondary" onClick={() => loadAllExperiences('approved')}>
+                  <button 
+                    className={`btn-secondary ${moderationView === 'pending' ? 'active' : ''}`}
+                    onClick={() => {
+                      setModerationView('pending');
+                      loadPendingExperiences();
+                    }}
+                  >
+                    Pending
+                  </button>
+                  <button 
+                    className={`btn-secondary ${moderationView === 'approved' ? 'active' : ''}`}
+                    onClick={() => {
+                      setModerationView('approved');
+                      loadAllExperiences('approved');
+                    }}
+                  >
                     View Approved
                   </button>
-                  <button className="btn-secondary" onClick={() => loadAllExperiences('rejected')}>
+                  <button 
+                    className={`btn-secondary ${moderationView === 'rejected' ? 'active' : ''}`}
+                    onClick={() => {
+                      setModerationView('rejected');
+                      loadAllExperiences('rejected');
+                    }}
+                  >
                     View Rejected
                   </button>
-                  <button className="btn-primary" onClick={loadPendingExperiences}>
+                  <button className="btn-primary" onClick={() => {
+                    if (moderationView === 'pending') {
+                      loadPendingExperiences();
+                    } else {
+                      loadAllExperiences(moderationView);
+                    }
+                  }}>
                     Refresh
                   </button>
                 </div>
               </div>
-              {pendingLoading ? (
+              {(pendingLoading || allExperiencesLoading) ? (
                 <div className="loading-state">
                   <div className="loading-spinner"></div>
                   <p>Loading experiences...</p>
                 </div>
-              ) : pendingExperiences.length === 0 ? (
-                <div className="empty-state">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M9 11l3 3L22 4" />
-                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-                  </svg>
-                  <h3>No pending experiences</h3>
-                  <p>All experiences have been reviewed! Students can now see all approved experiences.</p>
-                </div>
-              ) : (
-                <div className="experiences-list">
-                  {pendingExperiences.map((exp) => (
+              ) : (() => {
+                const currentExperiences = moderationView === 'pending' ? pendingExperiences : allExperiences;
+                const isEmpty = currentExperiences.length === 0;
+                
+                if (isEmpty) {
+                  return (
+                    <div className="empty-state">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M9 11l3 3L22 4" />
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                      </svg>
+                      <h3>No {moderationView} experiences</h3>
+                      <p>
+                        {moderationView === 'pending' 
+                          ? 'All experiences have been reviewed! Students can now see all approved experiences.'
+                          : moderationView === 'approved'
+                          ? 'No approved experiences found.'
+                          : 'No rejected experiences found.'}
+                      </p>
+                    </div>
+                  );
+                }
+                
+                return (
+                  <div className="experiences-list" key="experiences-list">
+                    {currentExperiences.map((exp) => (
                     <div key={exp._id} className="experience-item detailed">
                       <div className="experience-main">
                         <div className="experience-header">
@@ -939,10 +988,10 @@ function AdminDashboard() {
                         </button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
           )}
 
