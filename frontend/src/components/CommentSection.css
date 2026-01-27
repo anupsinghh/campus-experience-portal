@@ -202,6 +202,14 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: var(--spacing-xs);
+    gap: var(--spacing-sm);
+}
+
+.comment-header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
 }
 
 .comment-author-info {
@@ -258,6 +266,25 @@
     word-wrap: break-word;
 }
 
+/* Reply button (right side in header, larger) */
+.comment-reply-btn {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--neutral-700);
+    background: var(--neutral-200);
+    border: 1px solid var(--neutral-300);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.comment-reply-btn:hover {
+    background: var(--neutral-300);
+    color: var(--neutral-800);
+    border-color: var(--neutral-500);
+}
+
 /* Delete Button */
 .comment-delete-btn {
     padding: 0.375rem;
@@ -280,6 +307,128 @@
     display: block;
 }
 
+/* Comment thread (comment + replies) */
+.comment-thread {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.comment-replies {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding-left: calc(40px + var(--spacing-md));
+}
+
+@media (max-width: 768px) {
+    .comment-replies {
+        padding-left: calc(36px + var(--spacing-sm));
+    }
+}
+
+/* Reply styling (from "Posted By") */
+.comment-card--reply {
+    background: var(--neutral-50);
+    border-color: var(--neutral-200);
+    padding: var(--spacing-md);
+}
+
+.comment-card--reply .comment-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+}
+
+.comment-author-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--neutral-700);
+    background: var(--neutral-200);
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+    margin-left: var(--spacing-xs);
+}
+
+/* Reply form */
+.reply-form {
+    background: white;
+    border: 1px solid var(--neutral-300);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm);
+    margin-top: var(--spacing-xs);
+}
+
+.reply-textarea {
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--neutral-300);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 56px;
+}
+
+.reply-textarea:focus {
+    outline: none;
+    border-color: var(--neutral-700);
+}
+
+.reply-form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-xs);
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.reply-form-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.reply-cancel-btn {
+    padding: 0.35rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--neutral-300);
+    color: var(--text-secondary);
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.reply-cancel-btn:hover:not(:disabled) {
+    background: var(--neutral-100);
+    color: var(--text-primary);
+}
+
+.reply-submit-btn {
+    padding: 0.35rem 1rem;
+    background: linear-gradient(135deg, var(--neutral-700), var(--neutral-800));
+    color: white;
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.reply-submit-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.reply-submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .comment-card {
@@ -292,10 +441,24 @@
         font-size: 0.8rem;
     }
 
+    .comment-header {
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+    }
+
     .comment-author-info {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.25rem;
+    }
+
+    .comment-header-actions {
+        margin-left: auto;
+    }
+
+    .comment-reply-btn {
+        padding: 0.35rem 0.65rem;
+        font-size: 0.8rem;
     }
 
     .comment-form-footer {

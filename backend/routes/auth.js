@@ -88,12 +88,16 @@ router.post('/register', async (req, res) => {
 
     // Create user - ensure username is never null
     console.log('Creating user with username:', trimmedUsername.toLowerCase());
+    const allowedRoles = ['student', 'alumni'];
+    const requestedRole = (role || (isAlumni ? 'alumni' : 'student')).toLowerCase();
+    const finalRole = allowedRoles.includes(requestedRole) ? requestedRole : (isAlumni ? 'alumni' : 'student');
+
     const user = await User.create({
       name: String(name).trim(),
-      username: trimmedUsername.toLowerCase(), // Always lowercase and trimmed, never null
+      username: trimmedUsername.toLowerCase(),
       email: String(email).trim().toLowerCase(),
       password,
-      role: role || (isAlumni ? 'alumni' : 'student'),
+      role: finalRole,
       branch: branch ? String(branch).trim() : undefined,
       graduationYear,
       isAlumni: isAlumni || false,

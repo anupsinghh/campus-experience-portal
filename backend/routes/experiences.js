@@ -135,7 +135,7 @@ router.post('/', async (req, res) => {
       tips,
       interviewDate,
       offerStatus,
-      author, // For anonymous submissions
+      author: authorNameFromBody, // For anonymous submissions only (display name)
     } = req.body;
 
     // Basic validation
@@ -167,11 +167,10 @@ router.post('/', async (req, res) => {
       }
     }
 
-    // If user is authenticated, use their info; otherwise use provided author name
+    // Author is set only from JWT (logged-in user). Never from request body.
     let authorId = null;
-    let authorName = author || 'Anonymous';
+    let authorName = authorNameFromBody || 'Anonymous';
 
-    // Try to get user from token if provided (optional auth)
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       try {
         const jwt = require('jsonwebtoken');
@@ -184,13 +183,11 @@ router.post('/', async (req, res) => {
           authorName = user.name;
         }
       } catch (err) {
-        // Token invalid or expired, continue with anonymous submission
         console.log('Optional auth failed, using anonymous submission');
       }
     }
 
-    // Validate author name is provided if not authenticated
-    if (!authorId && !author) {
+    if (!authorId && !authorNameFromBody) {
       return res.status(400).json({
         error: 'Author name is required for anonymous submissions'
       });
@@ -212,7 +209,7 @@ router.post('/', async (req, res) => {
     });
 
     const populatedExperience = await Experience.findById(experience._id)
-      .populate('author', 'name email role branch');
+      .populate('author', 'name username email role branch');
 
     res.status(201).json(populatedExperience);
   } catch (error) {
@@ -224,24 +221,29 @@ router.post('/', async (req, res) => {
 // PUT /api/experiences/:id - Update experience (Protected - only author or admin)
 router.put('/:id', protect, async (req, res) => {
   try {
-    let experience = await Experience.findById(req.params.id);
+    const experience = await Experience.findById(req.params.id);
 
     if (!experience) {
       return res.status(404).json({ error: 'Experience not found' });
     }
 
-    // Check if user is author or admin
-    if (experience.author.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    const isAdmin = req.user.role === 'admin';
+    const isAuthor = experience.author && experience.author.toString() === req.user._id.toString();
+    if (!isAdmin && !isAuthor) {
       return res.status(403).json({ error: 'Not authorized to update this experience' });
     }
 
-    experience = await Experience.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    ).populate('author', 'name email role branch');
+    const body = { ...req.body };
+    delete body.author;
+    delete body.authorName;
 
-    res.json(experience);
+    const updated = await Experience.findByIdAndUpdate(
+      req.params.id,
+      body,
+      { new: true, runValidators: true }
+    ).populate('author', 'name username email role branch');
+
+    res.json(updated);
   } catch (error) {
     console.error('Error updating experience:', error);
     res.status(500).json({ error: error.message });
@@ -257,8 +259,9 @@ router.delete('/:id', protect, async (req, res) => {
       return res.status(404).json({ error: 'Experience not found' });
     }
 
-    // Check if user is author or admin
-    if (experience.author.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    const isAdmin = req.user.role === 'admin';
+    const isAuthor = experience.author && experience.author.toString() === req.user._id.toString();
+    if (!isAdmin && !isAuthor) {
       return res.status(403).json({ error: 'Not authorized to delete this experience' });
     }
 

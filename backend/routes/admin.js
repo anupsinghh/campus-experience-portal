@@ -7,9 +7,9 @@ const Announcement = require('../models/Announcement');
 const CompanyStandardization = require('../models/CompanyStandardization');
 const User = require('../models/User');
 
-// All admin routes require authentication and admin role
+// All admin routes require authentication and staff role (admin, coordinator, teacher)
 router.use(protect);
-router.use(authorize('admin'));
+router.use(authorize('admin', 'coordinator', 'teacher'));
 
 // ==================== MODERATION ROUTES ====================
 
@@ -140,9 +140,13 @@ router.put('/experiences/:id/reject', async (req, res) => {
 // PUT /api/admin/experiences/:id - Update experience (admin can edit any)
 router.put('/experiences/:id', async (req, res) => {
   try {
+    const body = { ...req.body };
+    delete body.author;
+    delete body.authorName;
+
     const experience = await Experience.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      body,
       { new: true, runValidators: true }
     )
       .populate('author', 'name username email')
@@ -783,6 +787,68 @@ router.get('/users/filters', async (req, res) => {
       success: false,
       error: error.message,
     });
+  }
+});
+
+// ==================== COORDINATORS / TEACHERS (Admin only) ====================
+
+// GET /api/admin/coordinators - List coordinators and teachers
+router.get('/coordinators', async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Only admin can manage coordinators.' });
+    }
+    const users = await User.find({ role: { $in: ['coordinator', 'teacher'] } })
+      .select('-password')
+      .sort({ createdAt: -1 });
+    res.json({ success: true, count: users.length, data: users });
+  } catch (error) {
+    console.error('Error fetching coordinators:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// POST /api/admin/coordinators - Create coordinator or teacher (admin only)
+router.post('/coordinators', async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Only admin can add coordinators.' });
+    }
+    const { name, username, email, password, role } = req.body;
+    if (!name || !username || !email || !password) {
+      return res.status(400).json({ success: false, error: 'Name, username, email, and password are required.' });
+    }
+    const r = (role || 'coordinator').toLowerCase();
+    if (r !== 'coordinator' && r !== 'teacher') {
+      return res.status(400).json({ success: false, error: 'Role must be coordinator or teacher.' });
+    }
+    const trimmedUsername = String(username).trim().toLowerCase();
+    if (!/^[a-z0-9_]+$/.test(trimmedUsername) || trimmedUsername.length < 3 || trimmedUsername.length > 20) {
+      return res.status(400).json({ success: false, error: 'Username must be 3–20 characters, lowercase letters, numbers, underscores only.' });
+    }
+    const emailRegex = /^[a-zA-Z0-9._-]+@marwadiuniversity\.(ac|edu)\.in$/;
+    if (!emailRegex.test(String(email).toLowerCase())) {
+      return res.status(400).json({ success: false, error: 'Email must be @marwadiuniversity.ac.in or .edu.in' });
+    }
+    if (String(password).length < 6) {
+      return res.status(400).json({ success: false, error: 'Password must be at least 6 characters.' });
+    }
+    const existing = await User.findOne({ $or: [{ email: String(email).toLowerCase() }, { username: trimmedUsername }] });
+    if (existing) {
+      return res.status(400).json({ success: false, error: 'Email or username already in use.' });
+    }
+    const user = await User.create({
+      name: String(name).trim(),
+      username: trimmedUsername,
+      email: String(email).trim().toLowerCase(),
+      password: String(password),
+      role: r,
+    });
+    const created = await User.findById(user._id).select('-password');
+    res.status(201).json({ success: true, data: created });
+  } catch (error) {
+    console.error('Error creating coordinator:', error);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 

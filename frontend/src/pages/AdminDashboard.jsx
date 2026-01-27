@@ -88,6 +88,20 @@ function AdminDashboard() {
   const [insights, setInsights] = useState(null);
   const [insightsLoading, setInsightsLoading] = useState(false);
 
+  // Coordinators (admin only)
+  const [coordinators, setCoordinators] = useState([]);
+  const [coordinatorsLoading, setCoordinatorsLoading] = useState(false);
+  const [showCoordinatorForm, setShowCoordinatorForm] = useState(false);
+  const [coordinatorForm, setCoordinatorForm] = useState({
+    name: '',
+    username: '',
+    email: '',
+    password: '',
+    role: 'coordinator',
+  });
+  const [coordinatorSubmitError, setCoordinatorSubmitError] = useState(null);
+  const [coordinatorSubmitting, setCoordinatorSubmitting] = useState(false);
+
   useEffect(() => {
     // Sync activeTab with URL parameter
     const tabFromUrl = searchParams.get('tab') || 'overview';
@@ -123,8 +137,10 @@ function AdminDashboard() {
       loadUserFilters();
     } else if (activeTab === 'insights') {
       loadInsights();
+    } else if (activeTab === 'coordinators' && user?.role === 'admin') {
+      loadCoordinators();
     }
-  }, [activeTab]);
+  }, [activeTab, user?.role]);
 
   // Note: Users are loaded when tab changes or when "Apply Filters" is clicked
   // Auto-reload on filter change can be added later if needed
@@ -499,6 +515,51 @@ function AdminDashboard() {
       setUserFilterOptions({ branches: [], years: [], roles: [] });
     } finally {
       setUserFiltersLoading(false);
+    }
+  };
+
+  const loadCoordinators = async () => {
+    try {
+      setCoordinatorsLoading(true);
+      const r = await adminAPI.getCoordinators();
+      const list = (r && r.data) ? r.data : (Array.isArray(r) ? r : []);
+      setCoordinators(list);
+    } catch (e) {
+      console.error('Error loading coordinators:', e);
+      setCoordinators([]);
+    } finally {
+      setCoordinatorsLoading(false);
+    }
+  };
+
+  const handleCreateCoordinator = async (e) => {
+    e.preventDefault();
+    if (!coordinatorForm.name?.trim() || !coordinatorForm.username?.trim() || !coordinatorForm.email?.trim() || !coordinatorForm.password) {
+      setCoordinatorSubmitError('Name, username, email, and password are required.');
+      return;
+    }
+    if (coordinatorForm.password.length < 6) {
+      setCoordinatorSubmitError('Password must be at least 6 characters.');
+      return;
+    }
+    setCoordinatorSubmitError(null);
+    setCoordinatorSubmitting(true);
+    try {
+      await adminAPI.createCoordinator({
+        name: coordinatorForm.name.trim(),
+        username: coordinatorForm.username.trim().toLowerCase(),
+        email: coordinatorForm.email.trim().toLowerCase(),
+        password: coordinatorForm.password,
+        role: coordinatorForm.role,
+      });
+      setShowCoordinatorForm(false);
+      setCoordinatorForm({ name: '', username: '', email: '', password: '', role: 'coordinator' });
+      await loadCoordinators();
+      alert('Coordinator/Teacher added successfully.');
+    } catch (err) {
+      setCoordinatorSubmitError(err?.message || 'Failed to add coordinator.');
+    } finally {
+      setCoordinatorSubmitting(false);
     }
   };
 
@@ -1472,6 +1533,88 @@ function AdminDashboard() {
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {activeTab === 'coordinators' && user?.role === 'admin' && (
+            <div className="coordinators-section">
+              <div className="section-header">
+                <h2>Coordinators & Teachers {coordinators.length > 0 && <span className="count-badge">({coordinators.length})</span>}</h2>
+                <div className="section-actions">
+                  <button className="btn-secondary" onClick={loadCoordinators}>Refresh</button>
+                  <button className="btn-primary" onClick={() => { setShowCoordinatorForm(!showCoordinatorForm); setCoordinatorSubmitError(null); }}>
+                    {showCoordinatorForm ? 'Cancel' : 'Add Coordinator / Teacher'}
+                  </button>
+                </div>
+              </div>
+
+              {showCoordinatorForm && (
+                <form onSubmit={handleCreateCoordinator} className="coordinator-form" style={{ marginBottom: 'var(--spacing-xl)', padding: 'var(--spacing-lg)', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                  <h3 style={{ margin: '0 0 var(--spacing-md) 0' }}>Add coordinator or teacher</h3>
+                  {coordinatorSubmitError && <p style={{ color: 'var(--error)', marginBottom: 'var(--spacing-md)' }}>{coordinatorSubmitError}</p>}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-md)', marginBottom: 'var(--spacing-md)' }}>
+                    <div>
+                      <label>Name *</label>
+                      <input type="text" value={coordinatorForm.name} onChange={(e) => setCoordinatorForm({ ...coordinatorForm, name: e.target.value })} placeholder="Full name" required style={{ width: '100%', padding: '0.5rem' }} />
+                    </div>
+                    <div>
+                      <label>Username *</label>
+                      <input type="text" value={coordinatorForm.username} onChange={(e) => setCoordinatorForm({ ...coordinatorForm, username: e.target.value.toLowerCase() })} placeholder="username" required style={{ width: '100%', padding: '0.5rem' }} />
+                    </div>
+                    <div>
+                      <label>Email *</label>
+                      <input type="email" value={coordinatorForm.email} onChange={(e) => setCoordinatorForm({ ...coordinatorForm, email: e.target.value })} placeholder="user@marwadiuniversity.ac.in" required style={{ width: '100%', padding: '0.5rem' }} />
+                    </div>
+                    <div>
+                      <label>Password *</label>
+                      <input type="password" value={coordinatorForm.password} onChange={(e) => setCoordinatorForm({ ...coordinatorForm, password: e.target.value })} placeholder="Min 6 characters" required minLength={6} style={{ width: '100%', padding: '0.5rem' }} />
+                    </div>
+                    <div>
+                      <label>Role</label>
+                      <select value={coordinatorForm.role} onChange={(e) => setCoordinatorForm({ ...coordinatorForm, role: e.target.value })} style={{ width: '100%', padding: '0.5rem' }}>
+                        <option value="coordinator">Coordinator</option>
+                        <option value="teacher">Teacher</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" className="btn-primary" disabled={coordinatorSubmitting}>{coordinatorSubmitting ? 'Adding...' : 'Add'}</button>
+                </form>
+              )}
+
+              {coordinatorsLoading ? (
+                <div className="loading-state"><div className="loading-spinner"></div><p>Loading coordinators...</p></div>
+              ) : coordinators.length === 0 ? (
+                <div className="empty-state">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" /><line x1="20" y1="8" x2="20" y2="14" /><line x1="23" y1="11" x2="17" y2="11" /></svg>
+                  <h3>No coordinators or teachers yet</h3>
+                  <p>Add coordinators or teachers to help manage the portal on your behalf.</p>
+                </div>
+              ) : (
+                <div className="users-grid">
+                  {coordinators.map((u) => (
+                    <div key={u._id || u.id} className="user-card">
+                      <div className="user-card-header">
+                        <div className="user-avatar">{u.name?.charAt(0)?.toUpperCase() || 'U'}</div>
+                        <div className="user-info">
+                          <h3>{u.name}</h3>
+                          <p className="user-username">@{u.username}</p>
+                        </div>
+                        <span className={`role-badge ${u.role}`}>{u.role === 'teacher' ? 'Teacher' : 'Coordinator'}</span>
+                      </div>
+                      <div className="user-card-body">
+                        <div className="user-detail-item"><strong>Email:</strong> {u.email}</div>
+                        <div className="user-detail-item"><strong>Joined:</strong> {formatDate(u.createdAt)}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'coordinators' && user?.role !== 'admin' && (
+            <div className="empty-state">
+              <p>Only admins can manage coordinators.</p>
             </div>
           )}
 

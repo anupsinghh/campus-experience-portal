@@ -189,11 +189,28 @@ export const commentsAPI = {
       withAuth: true,
     }),
 
+  createReply: (experienceId, commentId, content) =>
+    fetchAPI(`/experiences/${experienceId}/comments/${commentId}/replies`, {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+      withAuth: true,
+    }),
+
   delete: (commentId) =>
     fetchAPI(`/comments/${commentId}`, {
       method: 'DELETE',
       withAuth: true,
     }),
+};
+
+// Notifications API (comment notifications for experience authors)
+export const notificationsAPI = {
+  getList: () => fetchAPI('/notifications', { withAuth: true }),
+  getUnreadCount: () => fetchAPI('/notifications/unread-count', { withAuth: true }),
+  markRead: (id) =>
+    fetchAPI(`/notifications/${id}/read`, { method: 'PATCH', withAuth: true }),
+  markAllRead: () =>
+    fetchAPI('/notifications/read-all', { method: 'POST', withAuth: true }),
 };
 
 // Admin API
@@ -246,6 +263,14 @@ export const adminAPI = {
     return fetchAPI(`/admin/users${queryString ? `?${queryString}` : ''}`, { withAuth: true });
   },
   getUserFilters: () => fetchAPI('/admin/users/filters', { withAuth: true }),
+
+  getCoordinators: () => fetchAPI('/admin/coordinators', { withAuth: true }),
+  createCoordinator: (data) =>
+    fetchAPI('/admin/coordinators', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      withAuth: true,
+    }),
 
   // Announcements
   getAnnouncements: () => fetchAPI('/admin/announcements', { withAuth: true }),

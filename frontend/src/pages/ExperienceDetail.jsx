@@ -148,7 +148,10 @@ function ExperienceDetail() {
 
           {/* Comment Section */}
           <section className="detail-section">
-            <CommentSection experienceId={experience._id} />
+            <CommentSection
+              experienceId={experience._id}
+              experienceAuthorId={experience.author?._id ?? experience.author?.id}
+            />
           </section>
         </div>
       </div>

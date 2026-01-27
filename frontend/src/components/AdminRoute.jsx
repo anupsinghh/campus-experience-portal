@@ -19,12 +19,13 @@ function AdminRoute({ children }) {
     );
   }
 
-  if (user?.role !== 'admin') {
+  const isStaff = ['admin', 'coordinator', 'teacher'].includes(user?.role);
+  if (!isStaff) {
     return (
       <Navigate
         to="/dashboard"
         replace
-        state={{ error: 'Access denied. Admin privileges required.' }}
+        state={{ error: 'Access denied. Staff privileges required.' }}
       />
     );
   }

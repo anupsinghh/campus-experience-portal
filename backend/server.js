@@ -10,6 +10,7 @@ const usersRoutes = require('./routes/users');
 const commentsRoutes = require('./routes/comments');
 const adminRoutes = require('./routes/admin');
 const announcementsRoutes = require('./routes/announcements');
+const notificationsRoutes = require('./routes/notifications');
 
 // Connect to MongoDB
 connectDB();
@@ -67,6 +68,7 @@ app.use('/api/companies', companiesRoutes);
 app.use('/api/insights', insightsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/announcements', announcementsRoutes);
+app.use('/api/notifications', notificationsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

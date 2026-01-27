@@ -1460,6 +1460,16 @@
   color: rgba(239, 68, 68, 1);
 }
 
+.role-badge.coordinator {
+  background: rgba(139, 92, 246, 0.1);
+  color: rgba(139, 92, 246, 1);
+}
+
+.role-badge.teacher {
+  background: rgba(249, 115, 22, 0.1);
+  color: rgba(249, 115, 22, 1);
+}
+
 .user-card-body {
   display: flex;
   flex-direction: column;

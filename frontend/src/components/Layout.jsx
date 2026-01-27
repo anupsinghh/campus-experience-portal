@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import './Layout.css';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useAuthModals } from '../context/AuthModalContext.jsx';
-import { adminAPI, announcementsAPI } from '../services/api.js';
+import { adminAPI, announcementsAPI, notificationsAPI } from '../services/api.js';
 import UserMenu from './UserMenu.jsx';
 
 function Layout({ children }) {
@@ -16,15 +16,20 @@ function Layout({ children }) {
   const [announcementsCount, setAnnouncementsCount] = useState(0);
   const [showAnnouncements, setShowAnnouncements] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
+  const [notificationsUnreadCount, setNotificationsUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
-  // Fetch pending experiences count for admin
+  const isStaff = ['admin', 'coordinator', 'teacher'].includes(user?.role);
+
+  // Fetch pending experiences count for staff (admin, coordinators, teachers)
   useEffect(() => {
-    if (!initializing && isAuthenticated && user?.role === 'admin') {
+    if (!initializing && isAuthenticated && isStaff) {
       const fetchPendingCount = async () => {
         try {
           const response = await adminAPI.getStats();
@@ -40,7 +45,7 @@ function Layout({ children }) {
       const interval = setInterval(fetchPendingCount, 30000);
       return () => clearInterval(interval);
     }
-  }, [initializing, isAuthenticated, user]);
+  }, [initializing, isAuthenticated, isStaff]);
 
   // Fetch announcements for all users (students, alumni, etc.)
   useEffect(() => {
@@ -72,16 +77,48 @@ function Layout({ children }) {
     }
   }, [initializing, isAuthenticated]);
 
-  // Close announcements dropdown when clicking outside
+  // Notifications: unread count + list when dropdown open
+  useEffect(() => {
+    if (initializing || !isAuthenticated) return;
+    const fetchUnread = async () => {
+      try {
+        const r = await notificationsAPI.getUnreadCount();
+        if (r && typeof r.count === 'number') setNotificationsUnreadCount(r.count);
+      } catch (e) {
+        console.error('Error fetching notifications count:', e);
+      }
+    };
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 45000);
+    return () => clearInterval(interval);
+  }, [initializing, isAuthenticated]);
+
+  useEffect(() => {
+    if (!showNotifications || !isAuthenticated) return;
+    const fetchList = async () => {
+      try {
+        const list = await notificationsAPI.getList();
+        setNotifications(Array.isArray(list) ? list : []);
+      } catch (e) {
+        console.error('Error fetching notifications:', e);
+      }
+    };
+    fetchList();
+  }, [showNotifications, isAuthenticated]);
+
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (showAnnouncements && !event.target.closest('.announcements-dropdown') && !event.target.closest('button[onClick*="setShowAnnouncements"]')) {
         setShowAnnouncements(false);
       }
+      if (showNotifications && !event.target.closest('.notifications-dropdown') && !event.target.closest('.notifications-trigger')) {
+        setShowNotifications(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showAnnouncements]);
+  }, [showAnnouncements, showNotifications]);
 
   return (
     <div className="layout">
@@ -116,7 +153,7 @@ function Layout({ children }) {
                 </>
               ) : (
                 <>
-                  {isAuthenticated && user?.role === 'admin' ? (
+                  {isAuthenticated && isStaff ? (
                     <>
                       <Link 
                         to="/admin?tab=overview" 
@@ -187,6 +224,20 @@ function Layout({ children }) {
                         </svg>
                         Insights
                       </Link>
+                      {user?.role === 'admin' && (
+                        <Link 
+                          to="/admin?tab=coordinators" 
+                          className={`nav-link ${location.pathname === '/admin' && location.search.includes('tab=coordinators') ? 'active' : ''}`}
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '18px', height: '18px', marginRight: '4px' }}>
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="8.5" cy="7" r="4" />
+                            <line x1="20" y1="8" x2="20" y2="14" />
+                            <line x1="23" y1="11" x2="17" y2="11" />
+                          </svg>
+                          Coordinators
+                        </Link>
+                      )}
                     </>
                   ) : (
                     <>
@@ -251,6 +302,87 @@ function Layout({ children }) {
                         </div>
                       )}
                     </>
+                  )}
+                  {isAuthenticated && (
+                    <div className="nav-notifications-wrap" style={{ position: 'relative' }}>
+                      <button
+                        type="button"
+                        className="nav-link notifications-trigger"
+                        onClick={() => setShowNotifications(!showNotifications)}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                        title="Comment notifications"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '18px', height: '18px', marginRight: '4px' }}>
+                          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg>
+                        Notifications
+                        {notificationsUnreadCount > 0 && (
+                          <span className="nav-notification-badge">{notificationsUnreadCount}</span>
+                        )}
+                      </button>
+                      {showNotifications && (
+                        <div className="notifications-dropdown">
+                          <div className="notifications-dropdown-header">
+                            <h3>Notifications</h3>
+                            <div className="notifications-dropdown-header-actions">
+                              {notificationsUnreadCount > 0 && (
+                                <button
+                                  type="button"
+                                  className="notifications-mark-all"
+                                  onClick={async () => {
+                                    try {
+                                      await notificationsAPI.markAllRead();
+                                      setNotificationsUnreadCount(0);
+                                      const list = await notificationsAPI.getList();
+                                      setNotifications(Array.isArray(list) ? list : []);
+                                    } catch (e) {
+                                      console.error(e);
+                                    }
+                                  }}
+                                >
+                                  Mark all read
+                                </button>
+                              )}
+                              <button type="button" className="notifications-close-btn" onClick={() => setShowNotifications(false)} aria-label="Close">×</button>
+                            </div>
+                          </div>
+                          <div className="notifications-dropdown-content">
+                            {notifications.length === 0 ? (
+                              <p style={{ padding: 'var(--spacing-md)', textAlign: 'center', color: '#64748b' }}>
+                                No notifications. You&apos;ll see here when someone comments on your experience.
+                              </p>
+                            ) : (
+                              notifications.map((n) => (
+                                <Link
+                                  key={n._id}
+                                  to={`/experiences/${n.experience?._id || n.experience}`}
+                                  className={`notification-item ${n.read ? '' : 'notification-unread'}`}
+                                  onClick={async () => {
+                                    if (!n.read) {
+                                      try {
+                                        await notificationsAPI.markRead(n._id);
+                                        setNotificationsUnreadCount((c) => Math.max(0, c - 1));
+                                      } catch (e) {
+                                        console.error(e);
+                                      }
+                                    }
+                                    setShowNotifications(false);
+                                  }}
+                                >
+                                  <span className="notification-title">
+                                    {n.comment?.author?.name || 'Someone'} commented on your experience
+                                  </span>
+                                  <span className="notification-meta">
+                                    {n.experience?.company} – {n.experience?.role}
+                                  </span>
+                                </Link>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   )}
                   <div className="nav-auth">
                     {isAuthenticated ? (

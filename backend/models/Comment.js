@@ -18,11 +18,18 @@ const commentSchema = new mongoose.Schema({
         trim: true,
         maxlength: [1000, 'Comment must be less than 1000 characters'],
     },
+    parentComment: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
+        default: null,
+        index: true,
+    },
 }, {
     timestamps: true,
 });
 
 // Index for efficient querying
 commentSchema.index({ experience: 1, createdAt: -1 });
+commentSchema.index({ parentComment: 1, createdAt: 1 });
 
 module.exports = mongoose.model('Comment', commentSchema);
