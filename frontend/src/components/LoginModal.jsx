@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LoginModal.css';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useAuthModals } from '../context/AuthModalContext.jsx';
 
 function LoginModal({ onClose, initialEmail = '' }) {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
+  const navigate = useNavigate();
   const { openRegister } = useAuthModals();
   const [identifier, setIdentifier] = useState(initialEmail);
   const [password, setPassword] = useState('');
@@ -28,8 +30,13 @@ function LoginModal({ onClose, initialEmail = '' }) {
     }
 
     try {
-      await login(trimmedIdentifier, trimmedPassword);
+      const loginResult = await login(trimmedIdentifier, trimmedPassword);
       onClose?.();
+      
+      // Auto-redirect to admin dashboard if user is staff (admin, coordinator, teacher)
+      if (loginResult?.user?.role && ['admin', 'coordinator', 'teacher'].includes(loginResult.user.role)) {
+        navigate('/admin');
+      }
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {

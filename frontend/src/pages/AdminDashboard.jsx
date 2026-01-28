@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { adminAPI, insightsAPI } from '../services/api.js';
 import {
@@ -32,13 +32,15 @@ ChartJS.register(
 );
 
 function AdminDashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromUrl = searchParams.get('tab') || 'overview';
   const [activeTab, setActiveTab] = useState(tabFromUrl);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Moderation states
   const [pendingExperiences, setPendingExperiences] = useState([]);
@@ -127,7 +129,7 @@ function AdminDashboard() {
     // Load data when tab changes
     if (activeTab === 'moderation') {
       loadPendingExperiences();
-    } else if (activeTab === 'announcements') {
+    } else if (activeTab === 'notifications') {
       loadAnnouncements();
     } else if (activeTab === 'companies') {
       loadCompanyStandardizations();
@@ -148,6 +150,12 @@ function AdminDashboard() {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setSearchParams({ tab });
+    setSidebarOpen(false); // Close sidebar on mobile after selecting a tab
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
   const loadStats = async () => {
@@ -619,15 +627,153 @@ function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <div className="container">
-        {error && (
-          <div className="admin-error-banner" style={{ marginBottom: 'var(--spacing-xl)' }}>
-            <span>⚠️ {error}</span>
-            <button onClick={loadStats}>Refresh</button>
-          </div>
+      <div className="admin-wrapper">
+        {/* Hamburger Menu for Mobile */}
+        <div className="admin-hamburger">
+          <button 
+            className="hamburger-btn"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+        {/* Sidebar Overlay for Mobile */}
+        {sidebarOpen && (
+          <div 
+            className="sidebar-overlay"
+            onClick={() => setSidebarOpen(false)}
+          ></div>
         )}
 
-        <div className="admin-content">
+        {/* Left Sidebar Navigation */}
+        <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
+          <div className="sidebar-header">
+            <h1 className="sidebar-title">Admin Panel</h1>
+            <p className="sidebar-subtitle">Management</p>
+          </div>
+          
+          <nav className="admin-nav">
+            <button 
+              className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
+              onClick={() => handleTabChange('overview')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+              <span>Overview</span>
+              {stats?.experiences?.pending > 0 && (
+                <span className="nav-badge">{stats.experiences.pending}</span>
+              )}
+            </button>
+
+            <button 
+              className={`nav-item ${activeTab === 'moderation' ? 'active' : ''}`}
+              onClick={() => handleTabChange('moderation')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 11l3 3L22 4" />
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+              </svg>
+              <span>Moderation</span>
+              {stats?.experiences?.pending > 0 && (
+                <span className="nav-badge">{stats.experiences.pending}</span>
+              )}
+            </button>
+
+            <button 
+              className={`nav-item ${activeTab === 'notifications' ? 'active' : ''}`}
+              onClick={() => handleTabChange('notifications')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+              <span>Notifications</span>
+            </button>
+
+            <button 
+              className={`nav-item ${activeTab === 'companies' ? 'active' : ''}`}
+              onClick={() => handleTabChange('companies')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <span>Companies</span>
+            </button>
+
+            <button 
+              className={`nav-item ${activeTab === 'users' ? 'active' : ''}`}
+              onClick={() => handleTabChange('users')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              <span>Users</span>
+            </button>
+
+            {user?.role === 'admin' && (
+              <button 
+                className={`nav-item ${activeTab === 'coordinators' ? 'active' : ''}`}
+                onClick={() => handleTabChange('coordinators')}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="8.5" cy="7" r="4" />
+                  <line x1="20" y1="8" x2="20" y2="14" />
+                  <line x1="23" y1="11" x2="17" y2="11" />
+                </svg>
+                <span>Coordinators</span>
+              </button>
+            )}
+
+            <button 
+              className={`nav-item ${activeTab === 'insights' ? 'active' : ''}`}
+              onClick={() => handleTabChange('insights')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z" />
+              </svg>
+              <span>Insights</span>
+            </button>
+          </nav>
+
+          <div className="sidebar-footer">
+            <button 
+              className="logout-btn"
+              onClick={handleLogout}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              <span>Logout</span>
+            </button>
+          </div>
+        </aside>
+
+        {/* Main Content Area */}
+        <div className="admin-main">
+          <div className="container">
+            {error && (
+              <div className="admin-error-banner" style={{ marginBottom: 'var(--spacing-xl)' }}>
+                <span>⚠️ {error}</span>
+                <button onClick={loadStats}>Refresh</button>
+              </div>
+            )}
+
+            <div className="admin-content">
           {activeTab === 'overview' && (
             <div className="overview-section">
               {showAllExperiences ? (
@@ -1048,10 +1194,10 @@ function AdminDashboard() {
             </div>
           )}
 
-          {activeTab === 'announcements' && (
+          {activeTab === 'notifications' && (
             <div className="announcements-section">
               <div className="section-header">
-                <h2>Manage Announcements</h2>
+                <h2>Notifications & Announcements</h2>
                 <button className="btn-primary" onClick={() => setShowAnnouncementForm(true)}>
                   + Create Announcement
                 </button>
@@ -1552,7 +1698,7 @@ function AdminDashboard() {
                 <form onSubmit={handleCreateCoordinator} className="coordinator-form" style={{ marginBottom: 'var(--spacing-xl)', padding: 'var(--spacing-lg)', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                   <h3 style={{ margin: '0 0 var(--spacing-md) 0' }}>Add coordinator or teacher</h3>
                   {coordinatorSubmitError && <p style={{ color: 'var(--error)', marginBottom: 'var(--spacing-md)' }}>{coordinatorSubmitError}</p>}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-md)', marginBottom: 'var(--spacing-md)' }}>
+                  <div className="coordinator-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-md)', marginBottom: 'var(--spacing-md)' }}>
                     <div>
                       <label>Name *</label>
                       <input type="text" value={coordinatorForm.name} onChange={(e) => setCoordinatorForm({ ...coordinatorForm, name: e.target.value })} placeholder="Full name" required style={{ width: '100%', padding: '0.5rem' }} />
@@ -2004,6 +2150,8 @@ function AdminDashboard() {
               </div>
             </div>
           )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
