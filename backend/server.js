@@ -27,7 +27,7 @@ const corsOptions = {
     if (!origin || corsOriginEnv === '*') return callback(null, true);
     
     // Always allow Vercel production frontend
-    if (origin === 'https://campus-experience-portal.vercel.app') {
+    if (origin === 'https://campus-experience-portal.vercel.app,https://placements.singhanup.in/') {
       return callback(null, true);
     }
     
