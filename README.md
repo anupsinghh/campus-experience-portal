@@ -77,7 +77,7 @@ cd campus-placement-portal
 ```bash
 cd backend
 npm install
-```
+```as
 
 Create a `.env` file in the `backend` directory:
 
