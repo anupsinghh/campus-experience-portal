@@ -26,10 +26,15 @@ const corsOptions = {
     // Allow non-browser requests or same-origin (no origin header)
     if (!origin || corsOriginEnv === '*') return callback(null, true);
     
-    // Always allow Vercel production frontend
-    if (origin === 'https://campus-experience-portal.vercel.app,https://placements.singhanup.in') {
-      return callback(null, true);
-    }
+    const hardcodedAllowedOrigins = [
+  'https://campus-experience-portal.vercel.app',
+  'https://placements.singhanup.in',
+];
+
+if (hardcodedAllowedOrigins.includes(origin)) {
+  return callback(null, true);
+}
+
     
     const whitelist = corsOriginEnv
       .split(',')
