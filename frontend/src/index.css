@@ -1,37 +1,38 @@
-/* CSS Variables for Consistent Gradient Theme */
+/* CSS Variables for White & Light Blue Theme */
+
 :root {
-  /* Gradient Theme Colors (White to Indigo) */
+  /* Gradient Theme Colors (White to Light Blue) */
   --gradient-start: #ffffff;
-  --gradient-end: #6366f1;
-  --gradient-mid: rgba(99, 102, 241, 0.4);
+  --gradient-end: #38bdf8; /* Sky Blue */
+  --gradient-mid: rgba(56, 189, 248, 0.4);
   
-  /* Neutral Colors from Gradient */
+  /* Neutral Colors (Cool Blue-Grey Tint) */
   --neutral-50: #ffffff;
-  --neutral-100: #f8f9ff;
-  --neutral-200: #eef0ff;
-  --neutral-300: #e0e4ff;
-  --neutral-400: #cfd4ff;
-  --neutral-500: #b4bbff;
-  --neutral-600: #9096ff;
-  --neutral-700: #6366f1;
-  --neutral-800: #4f46e5;
-  --neutral-900: #4338ca;
+  --neutral-100: #f0f9ff; /* Alice Blue */
+  --neutral-200: #e0f2fe; /* Pale Blue */
+  --neutral-300: #bae6fd;
+  --neutral-400: #7dd3fc;
+  --neutral-500: #38bdf8; /* Main Light Blue */
+  --neutral-600: #0ea5e9;
+  --neutral-700: #0284c7;
+  --neutral-800: #0369a1;
+  --neutral-900: #0c4a6e; /* Deep Navy - The "Other Shade" */
 
   /* Text Colors */
-  --text-primary: #1f1b4d;
-  --text-secondary: #312e81;
-  --text-tertiary: #4f46e5;
+  --text-primary: #0c4a6e;   /* Deep Navy for readability */
+  --text-secondary: #334155; /* Blue-Grey Slate */
+  --text-tertiary: #0ea5e9;  /* Vibrant Light Blue for links */
 
-  /* Semantic Colors */
-  --success: #10b981;
-  --success-light: #d1fae5;
-  --success-dark: #059669;
-  --error: #ef4444;
-  --error-light: #fee2e2;
-  --error-dark: #dc2626;
-  --warning: #f59e0b;
-  --warning-light: #fef3c7;
-  --warning-dark: #d97706;
+  /* Semantic Colors - Adjusted to be 'Cool' to fit the theme */
+  --success: #2dd4bf;       /* Teal instead of Green */
+  --success-light: #ccfbf1;
+  --success-dark: #0f766e;
+  --error: #f43f5e;         /* Rose instead of pure Red */
+  --error-light: #ffe4e6;
+  --error-dark: #be123c;
+  --warning: #fbbf24;
+  --warning-light: #fffbeb;
+  --warning-dark: #b45309;
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -42,11 +43,11 @@
   --spacing-2xl: 3rem;
   --spacing-3xl: 4rem;
 
-  /* Shadows - Soft and Subtle */
-  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 10px 25px rgba(79, 70, 229, 0.08);
-  --shadow-lg: 0 16px 40px rgba(79, 70, 229, 0.12);
-  --shadow-xl: 0 25px 65px rgba(79, 70, 229, 0.16);
+  /* Shadows - Blue Tinted */
+  --shadow-sm: 0 1px 2px 0 rgba(14, 165, 233, 0.05);
+  --shadow-md: 0 10px 25px rgba(14, 165, 233, 0.08);
+  --shadow-lg: 0 16px 40px rgba(14, 165, 233, 0.12);
+  --shadow-xl: 0 25px 65px rgba(14, 165, 233, 0.16);
 
   /* Border Radius */
   --radius-sm: 0.5rem;
@@ -88,29 +89,28 @@ body {
   background: #ffffff;
 }
 
+/* Updated Background: Subtle Blue Grid and Soft Glows */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  /* Grid lines are now a very faint blue-grey */
   background-image:
-    linear-gradient(to right, rgba(229, 231, 235, 0.6) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(229, 231, 235, 0.6) 1px, transparent 1px),
-    radial-gradient(circle 500px at 20% 100%, rgba(139, 92, 246, 0.3), transparent),
-    radial-gradient(circle 500px at 100% 80%, rgba(59, 130, 246, 0.25), transparent);
+    linear-gradient(to right, rgba(203, 213, 225, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(203, 213, 225, 0.4) 1px, transparent 1px),
+    /* Glow 1: Light Blue */
+    radial-gradient(circle 600px at 20% 100%, rgba(56, 189, 248, 0.15), transparent),
+    /* Glow 2: Very Pale Blue */
+    radial-gradient(circle 600px at 100% 0%, rgba(186, 230, 253, 0.25), transparent);
   background-size: 48px 48px, 48px 48px, 100% 100%, 100% 100%;
   background-repeat: repeat, repeat, no-repeat, no-repeat;
   background-position: center;
   transform: translateZ(0);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
   line-height: 1.2;
   font-weight: 600;
@@ -150,9 +150,7 @@ button {
   font-weight: 500;
 }
 
-input,
-textarea,
-select {
+input, textarea, select {
   font-family: inherit;
 }
 
@@ -163,14 +161,13 @@ select {
   position: relative;
 }
 
-/* Smooth scrolling + base scale (less minimized feel) */
 html {
   font-size: 18px;
   scroll-behavior: smooth;
 }
 
-/* Selection color */
+/* Selection color updated to Light Blue */
 ::selection {
-  background-color: rgba(99, 102, 241, 0.2);
+  background-color: rgba(56, 189, 248, 0.2);
   color: var(--text-primary);
 }
